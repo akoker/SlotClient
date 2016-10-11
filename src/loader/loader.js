@@ -1,4 +1,4 @@
-var game = require('./../slot/slot.js');
+var app = require('./../app.js');
 var fileLoader = require('./fileLoader');
 var loader = exports;
 var gameData;
@@ -28,5 +28,5 @@ loader.loadComplete = function (){
     if(loadedCounter == toLoad){
         console.log("All assets are loaded, starting game...");
     }
-    game.initSlot(gameData);
+    app.startGame(gameData);
 }

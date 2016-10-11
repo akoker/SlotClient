@@ -25,68 +25,32 @@ var PIXI = require('pixi.js');
 var slot = require('./slot/slot.js');
 var reel = require('./slot/reel.js');
 var loader = require('./loader/loader.js');
+var app = exports;
+
 
 //console.log(reel.numOfSymbols);
-
-loader.startLoader(1);
-
 var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+var stage = new PIXI.Container();
 
 document.body.appendChild(renderer.view);
 
-var stage = new PIXI.Container();
-var cont = new PIXI.Container();
+loader.startLoader(1);
 
-for(var i = 1; i<5; i++){
-    var s = PIXI.Sprite.fromImage('./assets/symbols/textures/' + i + '.jpg')
-    s.position.y = (i-1)*128;
-    cont.addChild(s);
+app.startGame = function(data){
+    
+    slot.initSlot(data);
+    stage.addChild(slot.reelArr[0].tile);
+    slot.reelArr[0].startSpin();
+    update();
 }
 
-
-var brt = new PIXI.BaseRenderTexture(128, 512, PIXI.SCALE_MODES.LINEAR, 1);
-
-var rt = new PIXI.RenderTexture(brt);
-
-var tile = new PIXI.extras.TilingSprite(rt, 128, 384);
-
-//sprite.x = 0;
-//sprite.y = 0;
-stage.addChild(tile);
-/*
-var inc = 2;
-var isChanged = false;*/
-update();
-
 function update(){
-    renderer.render(cont, rt);
-    /*if(inc < 32)
-        inc+=0.2;
-    if(tile.tilePosition.y > 6000){
-        console.log("supposed to change");
-        cont.removeChildren();
-        for(var i = 1; i<5; i++){
-            var s = PIXI.Sprite.fromImage('./assets/symbols/textures/' + (i+4) + '.jpg')
-            s.position.y = (i-1)*128;
-            cont.addChild(s);
-        }
-        isChanged = true;
-    }
-    if(tile.tilePosition.y < 9500){
-        tile.tilePosition.y += inc;
-    }
-    else if(tile.tilePosition.y < 12288){
-        if(inc>4)
-            inc-=0.4;
-        tile.tilePosition.y +=inc;
-    }
-    else if(12288 - tile.tilePosition.y < inc){
-        tile.tilePosition.y = 12288;
-    }
-    */
-    //console.log(tile.tilePosition.y);
+    renderer.render(slot.reelArr[0].cont, slot.reelArr[0].rendText);
     requestAnimationFrame(update);
     renderer.render(stage);
+    if(slot.reelArr[0].isSpinning){
+        slot.reelArr[0].spinReel(20);
+    }
 }
 },{"./loader/loader.js":4,"./slot/reel.js":6,"./slot/slot.js":7,"pixi.js":1}],3:[function(require,module,exports){
 var fileLoader = exports;
@@ -105,7 +69,7 @@ fileLoader.loadJSON = function (path, callback) {
     xobj.send(null);
 }
 },{}],4:[function(require,module,exports){
-var game = require('./../slot/slot.js');
+var app = require('./../app.js');
 var fileLoader = require('./fileLoader');
 var loader = exports;
 var gameData;
@@ -135,9 +99,9 @@ loader.loadComplete = function (){
     if(loadedCounter == toLoad){
         console.log("All assets are loaded, starting game...");
     }
-    game.initSlot(gameData);
+    app.startGame(gameData);
 }
-},{"./../slot/slot.js":7,"./fileLoader":3}],5:[function(require,module,exports){
+},{"./../app.js":2,"./fileLoader":3}],5:[function(require,module,exports){
 var server = exports;
 
 server.name = "game server";
@@ -169,68 +133,79 @@ server.randomizeReels = function (rSize){
     return server.reels;
 }
 },{}],6:[function(require,module,exports){
-//for public scoping
-var reel = exports;
+module.exports = function (data){
+    //public variables
+    this.numOfSymbols = 7;
+    var symbolWidth;
+    var symbolHeight = 128;
+    var iterations = 10;
+    var symbolPath;
+    this.isSpinning = false;
+    this.spinSpeed = 16;
 
-//public variables
-reel.numOfSymbols = 20;
-reel.symbolWidth;
-reel.symbolPath;
+    //reelcontainer
+    this.cont = new PIXI.Container();
 
-//reelcontainer
-reel.cont = new PIXI.Container();
+    //symbol array for the reel
+    var reelData;
 
-//symbol array for the reel
-reel.reelData;
+    var brt = new PIXI.BaseRenderTexture(symbolWidth, this.numOfSymbols * symbolHeight, PIXI.SCALE_MODES.LINEAR, 1);
 
-var brt = new PIXI.BaseRenderTexture(128, 512, PIXI.SCALE_MODES.LINEAR, 1);
+    //render texture for the reel. it will be used inside update function to render
+    //the tiling image
+    this.rendText = new PIXI.RenderTexture(brt);
 
-//render texture for the reel. it will be used inside update function to render
-//the tiling image
-reel.rendText = new PIXI.RenderTexture(brt);
+    //tiling sprite for masking and spin animation
+    this.tile = new PIXI.extras.TilingSprite(this.rendText, 128, 384);
 
-//tiling sprite for masking and spin animation
-reel.tile = new PIXI.extras.TilingSprite(reel.rendText, 128, 384);
-
-//init reel
-reel.createReel = function(target, textureArr){
-    for(var i = 0; i<numOfSymbols; i++){
-        var s = PIXI.Sprite.fromImage('./assets/symbols/textures/' + i + '.jpg')
-        s.position.y = (i-1)*128;
-        cont.addChild(s);
+    //init reel
+    this.createReel = function(target, textureArr){
+        for(var i = 1; i<this.numOfSymbols+1; i++){
+            //console.log('doing it');
+            var s = PIXI.Sprite.fromImage('./../../assets/symbols/textures/' + i + '.jpg')
+            s.position.y = (i-1)*128;
+            this.cont.addChild(s);
+        }
     }
-    return reel.cont;
-}
 
-//replace symbols of the reel according to new spin data
-reel.replaceTexture = function(target, textureArr){    
-    reel.cont.removeChildren();
-    for(var i = 0; i<numOfSymbols; i++){
-        var s = PIXI.Sprite.fromImage(symbolPath + reelData[target + i] + '.jpg'/*'./assets/symbols/textures/' + i + '.jpg'*/)
-        s.position.y = (i-1)*128;
-        cont.addChild(s);
+    //replace symbols of the reel according to new spin data
+    this.replaceTexture = function(target, textureArr){    
+        this.cont.removeChildren();
+        for(var i = 0; i<numOfSymbols; i++){
+            var s = PIXI.Sprite.fromImage(symbolPath + reelData[target + i] + '.jpg'/*'./assets/symbols/textures/' + i + '.jpg'*/)
+            s.position.y = (i-1)*128;
+            this.cont.addChild(s);
+        }
+        return this.cont;
     }
-    return reel.cont;
+
+    this.startSpin = function(){
+        this.tile.tilePosition.y = 0;
+        this.isSpinning = true;
+    }
+
+    //spin reel
+    this.spinReel = function(target){
+        if(this.tile.tilePosition.y < iterations * symbolHeight*this.numOfSymbols)
+            this.tile.tilePosition.y += this.spinSpeed;
+    }
+
+    //stop reel
+    this.stopReel = function(target){
+
+    }
+    console.log("reached here");
+    return this;
 }
 
-//spin reel
-reel.spinReel = function(target){
 
-}
-
-//stop reel
-reel.stopReel = function(target){
-
-}
 },{}],7:[function(require,module,exports){
 var slot = exports;
 
 var server = require('./../serverSimulator/serverSim.js');
+var reel = require('./reel.js');
 
 
-slot.logit = function(){
-    console.log(server.randomizeSpin());
-}
 
 slot.reelArr = new Array();//array of reel containers
 slot.symbolTextures = new Array();
@@ -246,10 +221,24 @@ slot.spinData;
     //get initialized slot data
     //create reels *start with single one
 slot.initSlot = function(data){
-    slot.reelData = server.randomizeReels(100);
-    console.log("reel data: " + slot.reelData[0]);
+    //set game data
     slot.gameData = data;
     console.log("game data: " + slot.gameData.settings.totalLength);
+
+    //get reelData from simulated server
+    slot.reelData = server.randomizeReels(100);
+    console.log("reel data: " + slot.reelData[0]);
+
+    //get randomized spin data to randomize initial reel position
+    slot.spinData = server.randomizeSpin();
+
+    //create reels
+    //reel.cont = reel.createReel();
+    //slot.reelArr.push(reel.cont);
+    var r = new reel(slot.reelData[0]);
+    r.createReel(10,10);
+    slot.reelArr.push(r);
+    console.log("number of symbols: " + slot.reelArr[0].numOfSymbols);
 }
 
 //reset textures
@@ -263,4 +252,4 @@ slot.initSlot = function(data){
 //check if spins are done
 
 //check if reel line animations are done
-},{"./../serverSimulator/serverSim.js":5}]},{},[2]);
+},{"./../serverSimulator/serverSim.js":5,"./reel.js":6}]},{},[2]);

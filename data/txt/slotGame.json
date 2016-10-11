@@ -1,0 +1,62 @@
+{
+    "settings":{
+        "symbolTextureAssetPath": "/assets/symbols/textures/",
+        "symbolAnimAssetPath": "assets/symbols/anim",
+        "numberOfReels": 5,
+        "totalLength": 20,
+        "numberOfSymbolsOnReel": 3,
+        "reelGap": 10
+    },
+    "symbolProps":{
+        "sizeX": 128,
+        "sizeY": 128,
+        "x": 0,
+        "y": 0
+    },
+    "symbolImages":[
+        {
+            "name": "symbol01",
+            "texture": "1.jpg"
+        },
+        {
+            "name": "symbol02",
+            "texture": "2.jpg"
+        },
+        {
+            "name": "symbol03",
+            "texture": "3.jpg"
+        },
+        {
+            "name": "symbol04",
+            "texture": "4.jpg"
+        },
+        {
+            "name": "symbol05",
+            "texture": "5.jpg"
+        },
+        {
+            "name": "symbol06",
+            "texture": "6.jpg"
+        },
+        {
+            "name": "symbol07",
+            "texture": "q.jpg"
+        },
+        {
+            "name": "symbol08",
+            "texture": "k.jpg"
+        },
+        {
+            "name": "wild",
+            "texture": "wild.jpg"
+        },
+        {
+            "name": "scatter",
+            "texture": "scatter.jpg"
+        },
+        {
+            "name": "bonus",
+            "texture": "bonus.jpg"
+        }
+    ]
+}

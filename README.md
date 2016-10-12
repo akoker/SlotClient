@@ -10,15 +10,13 @@ browserify every time.
 
 ## Demo & Install
 
-after completing the npm setup, beefy and browserify(watchify) can be used with two seperate command lines as follows;
+* to install:
+    npm install
 
-* for watchify:
-- npm run watch
+* to run:
+    npm run start
 
-* for beefy:
-- beefy index.HTML
-
-* beefy runs on localhost:9966
+* beefy runs on localhost:9966 so the game can be seen on this page.
 
 ## How It Works?
 

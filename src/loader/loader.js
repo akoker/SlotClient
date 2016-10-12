@@ -1,5 +1,7 @@
 var app = require('./../app.js');
+var slot = require('./../slot/slot.js');
 var fileLoader = require('./fileLoader');
+var assetManager = require('./assetManager');
 var loader = exports;
 var gameData;
 
@@ -24,9 +26,11 @@ loader.startLoader = function (loaderCtr){
 }
 
 loader.loadComplete = function (){
+    slot.symbolTextures = assetManager.getSymbolTextures(gameData);
     loadedCounter++;
     if(loadedCounter == toLoad){
         console.log("All assets are loaded, starting game...");
     }
     app.startGame(gameData);
 }
+

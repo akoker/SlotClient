@@ -25,34 +25,109 @@ var PIXI = require('pixi.js');
 var slot = require('./slot/slot.js');
 var reel = require('./slot/reel.js');
 var loader = require('./loader/loader.js');
+var reelLine = require('./slot/reelLines');
+
 var app = exports;
 
+//only 1 json file will be loaded for game settings
+var nrOfTxtToLoad = 1;
 
-//console.log(reel.numOfSymbols);
+//variable names explain themselves
+var spinButton;
+var lineButton;
+var winLineButton;
+var lineContainer;
+var gameData;
+
+//create renderer and the stage
 var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+
+/**********place the game on the center of the screen**********/
+renderer.view.style.position = 'absolute';
+renderer.view.style.left = '50%';
+renderer.view.style.top = '50%';
+renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';
+/**************************************************************/
+
 var stage = new PIXI.Container();
 
-document.body.appendChild(renderer.view);
+//append renderer viewport to gamediv on html file
+var gameDiv = document.getElementById('gameDiv');
+gameDiv.appendChild(renderer.view);
 
-loader.startLoader(1);
+//start loader
+loader.startLoader(nrOfTxtToLoad);
 
+//function initializes the game after load is completed. callback by loader.js
 app.startGame = function(data){
-    
-    slot.initSlot(data);
-    stage.addChild(slot.reelArr[0].tile);
-    slot.reelArr[0].startSpin();
+    lineContainer = new PIXI.Container;
+    gameData = data;
+
+    //spin button and its handler are created
+    spinButton = document.getElementById('spinButton');
+    spinButton.onclick = function(){
+        lineContainer.removeChildren();
+        slot.startSpin();
+    } 
+
+    //drawLine button and its handler are created
+    lineButton = document.getElementById('lineButton');
+    lineButton.onclick = function(){
+        lineContainer.removeChildren();
+        console.log("lineButton is clicked");
+        lineContainer.addChild(reelLine.drawLine());
+    }   
+
+    //drawWinningLine button and its handler are created
+    winLineButton = document.getElementById('winLineButton');
+    winLineButton.onclick = function(){
+        lineContainer.removeChildren();
+        console.log("winLineButton is clicked");
+        lineContainer.addChild(reelLine.drawWinningLine());
+    }
+
+    //initialize slot game
+    slot.initSlot(gameData);
+
+    //add tiling sprites of the reels to the stage after initialization
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        stage.addChild(slot.reelArr[i].tile);
+    }
+
+    //needs to be added to the stage after reels in order to be on the top layer
+    stage.addChild(lineContainer);
+
+    //start updating game
     update();
 }
 
+//updates frame
 function update(){
-    renderer.render(slot.reelArr[0].cont, slot.reelArr[0].rendText);
     requestAnimationFrame(update);
     renderer.render(stage);
-    if(slot.reelArr[0].isSpinning){
-        slot.reelArr[0].spinReel(20);
+
+    //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        renderer.render(slot.reelArr[i].cont, slot.reelArr[i].rendText);
+        if(slot.reelArr[i].isSpinning){
+            slot.reelArr[i].spinReel(gameData.settings.totalLength);
+        }
     }
 }
-},{"./loader/loader.js":4,"./slot/reel.js":6,"./slot/slot.js":7,"pixi.js":1}],3:[function(require,module,exports){
+},{"./loader/loader.js":5,"./slot/reel.js":7,"./slot/reelLines":8,"./slot/slot.js":9,"pixi.js":1}],3:[function(require,module,exports){
+var assetManager = exports;
+
+assetManager.getSymbolTextures = function(gameData){
+    var symTPath = gameData.settings.symbolTextureAssetPath;
+    console.log("loading symbol textures");
+    var symbolTextures = new Array();
+    for(var i = 0; i < gameData.symbolImages.length;i++){
+        var t = symTPath + gameData.symbolImages[i].texture;
+        symbolTextures.push(PIXI.Texture.fromImage(t));
+    }
+    return symbolTextures;
+}
+},{}],4:[function(require,module,exports){
 var fileLoader = exports;
 
 fileLoader.loadJSON = function (path, callback) {
@@ -68,9 +143,11 @@ fileLoader.loadJSON = function (path, callback) {
     }
     xobj.send(null);
 }
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var app = require('./../app.js');
+var slot = require('./../slot/slot.js');
 var fileLoader = require('./fileLoader');
+var assetManager = require('./assetManager');
 var loader = exports;
 var gameData;
 
@@ -95,13 +172,16 @@ loader.startLoader = function (loaderCtr){
 }
 
 loader.loadComplete = function (){
+    slot.symbolTextures = assetManager.getSymbolTextures(gameData);
     loadedCounter++;
     if(loadedCounter == toLoad){
         console.log("All assets are loaded, starting game...");
     }
     app.startGame(gameData);
 }
-},{"./../app.js":2,"./fileLoader":3}],5:[function(require,module,exports){
+
+
+},{"./../app.js":2,"./../slot/slot.js":9,"./assetManager":3,"./fileLoader":4}],6:[function(require,module,exports){
 var server = exports;
 
 server.name = "game server";
@@ -110,13 +190,15 @@ server.noOfReels = 5;
 server.reelSize = 100;
 server.reels = new Array();
 server.spinData = new Array();
+server.numberOfSymbolAssets = 12;
 
 server.randomizeSpin = function (){
     server.spinData = new Array();
     console.log('Generating spin data');
     for(var i = 0; i < server.noOfReels; i++){
-        server.spinData.push(Math.floor((Math.random() * server.reelSize-1) + 0));
+        server.spinData.push(Math.floor((Math.random() * (server.reelSize)) + 0));
     }
+    console.log("new spin indexes: " + server.spinData[0] + " " + server.spinData[1] + " " + server.spinData[2] + " " + server.spinData[3] + " " + server.spinData[4] + " ")
     return server.spinData;
 }
 
@@ -126,22 +208,30 @@ server.randomizeReels = function (rSize){
     for(var i = 0; i < server.noOfReels; i++){
         var rl =new Array();
         for(var j = 0; j < rSize; j++){
-            rl.push(Math.floor((Math.random() * 10) + 0));
+            rl.push(Math.floor((Math.random() * server.numberOfSymbolAssets) + 0));
         }
         server.reels.push(rl);
     }
     return server.reels;
 }
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+var app = require('./../app.js');
+
 module.exports = function (data){
     //public variables
-    this.numOfSymbols = 7;
-    var symbolWidth;
+    this.numOfSymbols = 20;
+    var symbolWidth = 128;
     var symbolHeight = 128;
-    var iterations = 10;
+    var iterations = 4;
     var symbolPath;
+    var gameData;
     this.isSpinning = false;
-    this.spinSpeed = 16;
+    this.spinSpeed = 14;
+    this.maxSpeed = 40;
+    var spinInc = this.spinSpeed;
+    this.textureArr;
+    this.textureChanged = false;
+    this.index;
 
     //reelcontainer
     this.cont = new PIXI.Container();
@@ -156,100 +246,227 @@ module.exports = function (data){
     this.rendText = new PIXI.RenderTexture(brt);
 
     //tiling sprite for masking and spin animation
-    this.tile = new PIXI.extras.TilingSprite(this.rendText, 128, 384);
+    this.tile = new PIXI.extras.TilingSprite(this.rendText, symbolWidth, symbolHeight*3);
 
     //init reel
-    this.createReel = function(target, textureArr){
-        for(var i = 1; i<this.numOfSymbols+1; i++){
-            //console.log('doing it');
-            var s = PIXI.Sprite.fromImage('./../../assets/symbols/textures/' + i + '.jpg')
-            s.position.y = (i-1)*128;
+    this.createReel = function(target, textureArr, data){
+        this.textureArr = textureArr;
+        reelData = data;   
+        for(var i = 0; i<this.numOfSymbols; i++){
+            var s = new PIXI.Sprite(this.textureArr[reelData[normalizeIndexNumber(target+i, reelData.length)]]);
+            s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
     }
 
     //replace symbols of the reel according to new spin data
-    this.replaceTexture = function(target, textureArr){    
+    this.replaceTexture = function(target){
         this.cont.removeChildren();
-        for(var i = 0; i<numOfSymbols; i++){
-            var s = PIXI.Sprite.fromImage(symbolPath + reelData[target + i] + '.jpg'/*'./assets/symbols/textures/' + i + '.jpg'*/)
-            s.position.y = (i-1)*128;
+        for(var i = 0; i<this.numOfSymbols; i++){
+            var s = new PIXI.Sprite(this.textureArr[reelData[normalizeIndexNumber(target+i, reelData.length)]]);
+            s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
+        this.textureChanged = true;
         return this.cont;
     }
 
-    this.startSpin = function(){
+    this.startSpin = function(target){
+        spinInc = this.spinSpeed;
         this.tile.tilePosition.y = 0;
         this.isSpinning = true;
+        this.textureChanged = false;
+        this.currentTarget = target;
     }
 
     //spin reel
-    this.spinReel = function(target){
+    this.spinReel = function(){
+        //before upper speed limit, speed up spin
+        if(this.tile.tilePosition.y < (iterations*symbolHeight*this.numOfSymbols)*0.6 && spinInc < this.maxSpeed){
+                spinInc+=0.1;
+            }
+        //while on top speed, replace textures according to the target
+        else if(this.tile.tilePosition.y > (iterations*symbolHeight*this.numOfSymbols)*0.6 && this.tile.tilePosition.y < (iterations*symbolHeight*this.numOfSymbols)*0.8){
+            if(!this.textureChanged){
+                console.log("texture was changed");
+                this.cont = this.replaceTexture(this.currentTarget);
+            }
+        }
+        //speed down for last %20 of spin
+        else if(this.tile.tilePosition.y > (iterations*symbolHeight*this.numOfSymbols)*0.8 && spinInc > this.spinSpeed){
+            spinInc-=0.35;
+        }
+        //spin the reel by increment tile position
         if(this.tile.tilePosition.y < iterations * symbolHeight*this.numOfSymbols)
-            this.tile.tilePosition.y += this.spinSpeed;
+            this.tile.tilePosition.y += spinInc;
+        //if increment variable messes up, place the reel into its targeted position
+        else if(this.tile.tilePosition.y > iterations*symbolHeight*this.numOfSymbols){
+            this.tile.tilePosition.y = iterations*symbolHeight*this.numOfSymbols;
+            this.isSpinning = false;
+        }
     }
 
     //stop reel
     this.stopReel = function(target){
-
+        if(!this.textureChanged)
+            this.cont = this.replaceTexture(target);
+        this.tile.tilePosition.y = 0;
+        this.isSpinning = false;
     }
-    console.log("reached here");
     return this;
 }
 
+function normalizeIndexNumber(ind, arraySize){
+    if(ind < 0){
+        return Math.abs(arraySize + ind);
+    }
+    if(ind >= arraySize){
+        return Math.abs(arraySize - ind);
+    }else
+        return ind;
+    //return (arraySize - ind) < 0 ? Math.abs(arraySize-ind + 1) : ind;
+}
+},{"./../app.js":2}],8:[function(require,module,exports){
+var PIXI = require('pixi.js');
+var reelLines = exports;
 
-},{}],7:[function(require,module,exports){
+//data variables are hardcoded because this class is only for showcasing its functionality. it can easily be turned into completely dynamical.
+//drawing functions run dynamically
+var p = [2,1,1,2,0];
+var pArgs = new Object();
+pArgs.leftPos = 60;
+pArgs.rightPos = 740;
+pArgs.topMargin = 100;
+pArgs.symbolWidth = 128;
+pArgs.symbolHeight = 128;
+pArgs.reelMargin = 10;
+pArgs.numberOfReels = 5;
+
+//draw only possible line
+reelLines.drawLine = function (){
+    randomizeReelLines();
+    console.log("drawing line");
+    var g = new PIXI.Graphics();
+    g.lineStyle(4, 0xffd900, 1);
+    g.moveTo(pArgs.leftPos - 20, p[0]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
+    for(var i = 0; i < 5; i++){
+        g.lineTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[i] + pArgs.symbolHeight/2);
+        g.moveTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[i] + pArgs.symbolHeight/2);
+    }
+    g.endFill();
+    return g;
+}
+
+//draws winning line with squares
+reelLines.drawWinningLine = function (){
+    randomizeReelLines();
+    console.log("drawing winning line");
+    var g = new PIXI.Graphics();
+    g.lineStyle(4, 0xaad900, 1);
+    
+    g.moveTo(pArgs.leftPos -20, p[0]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
+
+    for(var i = 0; i < 5; i++){
+        g.lineTo(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
+        g.moveTo(pArgs.leftPos + (i+1)*pArgs.symbolWidth + i*pArgs.reelMargin, p[i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
+
+    }
+    for(var i = 0; i < 5; i++){
+        g.drawRect(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[i]*pArgs.symbolHeight + pArgs.topMargin, pArgs.symbolWidth, pArgs.symbolHeight);
+    }
+    g.endFill();
+    return g;
+}
+
+//randomizes reel line data so that you can see it works on all conditions
+function randomizeReelLines(){
+    for(var i = 0; i < pArgs.numberOfReels; i++){
+        p[i] = Math.floor((Math.random() * 3) + 0)
+    }
+    console.log("winning line: " + p[0] + " " + p[1] + " " + p[2] + " " + p[3] + " " + p[4]);
+}
+},{"pixi.js":1}],9:[function(require,module,exports){
 var slot = exports;
 
 var server = require('./../serverSimulator/serverSim.js');
 var reel = require('./reel.js');
+var reelGap;
+var symbolWidth;
+var symbolHeight;
+var slotXPos;
+var slotYPos;
+var numberOfReels;
+var reelItemSize;
 
 
 
 slot.reelArr = new Array();//array of reel containers
-slot.symbolTextures = new Array();
+slot.symbolTextures;
 slot.gameData;
 slot.reelData;
 slot.spinData;
 
 
+function setVarValues(){
+    symbolWidth = slot.gameData.symbolProps.symbolWidth;
+    symbolHeight = slot.gameData.symbolProps.symbolHeight;
+    reelGap = slot.gameData.settings.reelGap;
+    slotXPos = slot.gameData.settings.slotXPos;
+    slotYPos = slot.gameData.settings.slotYPos;
+    numberOfReels = slot.gameData.settings.numberOfReels;
+    reelItemSize = slot.gameData.settings.reelItemSize;
+}
 
 
-//functions:
 //init slot
-    //get initialized slot data
-    //create reels *start with single one
 slot.initSlot = function(data){
     //set game data
     slot.gameData = data;
-    console.log("game data: " + slot.gameData.settings.totalLength);
+    setVarValues();
 
     //get reelData from simulated server
-    slot.reelData = server.randomizeReels(100);
-    console.log("reel data: " + slot.reelData[0]);
+    slot.reelData = server.randomizeReels(reelItemSize);
+
+    for(var i = 0 ; i < numberOfReels ; i++)
+    console.log("reel data" + i + ":     " + slot.reelData[i]);
 
     //get randomized spin data to randomize initial reel position
     slot.spinData = server.randomizeSpin();
 
     //create reels
-    //reel.cont = reel.createReel();
-    //slot.reelArr.push(reel.cont);
-    var r = new reel(slot.reelData[0]);
-    r.createReel(10,10);
-    slot.reelArr.push(r);
-    console.log("number of symbols: " + slot.reelArr[0].numOfSymbols);
+    for(var i = 0; i < numberOfReels; i++){
+        var r = new reel(slot.reelData[i]);
+        r.createReel(slot.spinData[i], slot.symbolTextures, slot.reelData[i]);
+        
+        //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
+        console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
+        
+        //set reel Positions
+        r.tile.position.x = slotXPos + (symbolWidth+reelGap) * i;
+        r.tile.position.y = slotYPos;
+
+        //push reels into reel array
+        slot.reelArr.push(r);
+    }
 }
 
-//reset textures
+slot.startSpin = function(){
+    //if last reel is not spinning, then none of them are. In this example, they spin synchronously so order is not important.
+    //if slot is not spinning and pressed spin button, get new spin data from server simulator
+    if(!slot.reelArr[slot.spinData.settings.numberOfReels-1].isSpinning)
+        slot.spinData = server.randomizeSpin();
 
-//spin
-
-//stop
-
-//animate reel lines
-
-//check if spins are done
-
-//check if reel line animations are done
-},{"./../serverSimulator/serverSim.js":5,"./reel.js":6}]},{},[2]);
+        
+    //you can trace it on the console if the spin stops on correct position or not. result of every spin will be show on the console.
+    //you can check if visuals are correct by looking at the assets folder
+    console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
+    
+    //if not spinning, start spinning each reel, if spinning, stop them and set the final position
+    for(var i = 0; i < 5; i++){
+        if(!slot.reelArr[i].isSpinning)
+            slot.reelArr[i].startSpin(slot.spinData[i]);
+        else
+            slot.reelArr[i].stopReel(slot.spinData[i]);
+    }
+}
+},{"./../serverSimulator/serverSim.js":6,"./reel.js":7}]},{},[2]);

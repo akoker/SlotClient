@@ -4,12 +4,13 @@
   "description": "slot game client",
   "main": "index.js",
   "dependencies": {
-    "beefy": "^2.1.8",
     "browserify": "^13.1.0",
-    "pixi": "^4.0.1",
+    "pixi": "^4.0.1"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.8",
     "watchify": "^3.7.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify src/app.js -o src/bundle.js",

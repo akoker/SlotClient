@@ -5,11 +5,14 @@
         "numberOfReels": 5,
         "totalLength": 20,
         "numberOfSymbolsOnReel": 3,
-        "reelGap": 10
+        "reelGap": 10,
+        "slotXPos": 60,
+        "slotYPos": 100,
+        "reelItemSize": 100
     },
     "symbolProps":{
-        "sizeX": 128,
-        "sizeY": 128,
+        "symbolWidth": 128,
+        "symbolHeight": 128,
         "x": 0,
         "y": 0
     },
@@ -37,6 +40,10 @@
         {
             "name": "symbol06",
             "texture": "6.jpg"
+        },
+        {
+            "name": "symbol07",
+            "texture": "7.jpg"
         },
         {
             "name": "symbol07",

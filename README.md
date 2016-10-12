@@ -8,7 +8,7 @@ browserify every time.
 
 [slot-client]: https://github.com/alicanKoker/SlotClient
 
-## Demo
+## Demo & Install
 
 after completing the npm setup, beefy and browserify(watchify) can be used with two seperate command lines as follows;
 

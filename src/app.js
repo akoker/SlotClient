@@ -71,6 +71,7 @@ app.startGame = function(data){
         stage.addChild(slot.reelArr[i].tile);
     }
 
+
     //needs to be added to the stage after reels in order to be on the top layer
     stage.addChild(lineContainer);
 

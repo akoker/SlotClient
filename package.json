@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "browserify": "^13.1.0",
-    "pixi": "^4.0.1"
+    "pixi.js": "^4.0.1"
   },
   "devDependencies": {
     "beefy": "^2.1.8",
@@ -13,8 +13,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/app.js -o src/bundle.js",
-    "watch": "watchify src/app.js -o src/bundle.js"
+    "watch": "watchify src/app.js -o src/bundle.js",
+    "start": "./node_modules/.bin/beefy index.html"
   },
   "author": "Alican Köker",
   "license": "ISC"

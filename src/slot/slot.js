@@ -65,7 +65,8 @@ slot.initSlot = function(data){
 slot.startSpin = function(){
     //if last reel is not spinning, then none of them are. In this example, they spin synchronously so order is not important.
     //if slot is not spinning and pressed spin button, get new spin data from server simulator
-    if(!slot.reelArr[slot.spinData.settings.numberOfReels-1].isSpinning)
+    
+    if(!slot.reelArr[slot.gameData.settings.numberOfReels-1].isSpinning)
         slot.spinData = server.randomizeSpin();
 
         

@@ -14,7 +14,7 @@ var gameManager = require('./../gameManager.js');
     return symbolTextures;
 }*/
 
-var totalAssetBatches = 1;
+var totalAssetBatches = 2;
 var counter = 0;
 
 assetManager.symbolTextures;
@@ -24,6 +24,9 @@ assetManager.uiAssets;
 assetManager.loadAssets = function(data){
     var smbLoader = new assetLoader(data.symbolImages);
     smbLoader.Load(data.settings.symbolTextureAssetPath, symbolsCallback)
+
+    var uiLoader = new assetLoader(data.uiImages);
+    uiLoader.Load(data.settings.uiAssetsPath, uiCallBack);
 }
 
 function symbolsCallback(data){
@@ -36,3 +39,11 @@ function checkComplete(){
     if(totalAssetBatches == counter)
         gameManager.initGame();
 }
+
+
+function uiCallBack(data){
+    assetManager.uiAssets = data;
+    console.log("assets are: " + assetManager.uiAssets.resources['frame'].texture);
+    checkComplete();
+}
+

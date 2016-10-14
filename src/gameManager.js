@@ -6,7 +6,6 @@ in order to be able to handle all of the objects on the game
 scene.
 */
 
-var app = require('./app.js');
 var objectManager = require('./engine/objectController.js');
 var loader = require('./loader/loader.js');
 
@@ -14,9 +13,11 @@ var gameJSON = '/../../data/txt/slotGame.json';
 var assetsJSON = '/../../data/txt/assets.json';
 
 var assetData;
-var gameData = new Object();
+var gameData;
 
 var gameManager = exports;
+
+gameManager.app = require('./app.js');
 
 var counter = 0;
 var totalJSON = 2;
@@ -29,17 +30,19 @@ gameManager.start = function(){
     console.log("game manager started");
     loader.loadJSON(assetsJSON, createJSONData, "assetData");
     loader.loadJSON(gameJSON, createJSONData, "gameData");
-    //objectManager.start();
 }
 
 gameManager.initGame = function(){
-    console.log("game is being initialized");7
+    console.log("game is being initialized");
 
     //initialize slot game
     gameManager.slot.gameManager = this;
     gameManager.slot.initSlot(gameData, assetData);
 
-    app.addReelsToStage(gameData);
+    console.log("dataa: " + gameData);
+    objectManager.createBackgroundObject(gameData.scene[0]);
+
+    gameManager.app.addReelsToStage(gameData);
 }
 
 gameManager.startSpinCycle = function(){

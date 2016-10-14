@@ -8,6 +8,8 @@ module.exports = function(args){
 
     this.Load = function(prefix, callback){
         callbackFunc = callback;
+        console.log("assetloader args: " + args[0].texture);
+        console.log("args length: " + args.length);
         for(var i = 0; i < args.length; i++){
             loader.add(args[i].name, prefix + args[i].texture);
             loader.once('complete', onAssetsLoaded);

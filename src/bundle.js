@@ -45,7 +45,7 @@ var lineContainer;
 var gameData;
 
 //create renderer and the app.stage
-var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: false});
+var renderer = PIXI.autoDetectRenderer(1280, 800,{transparent: false});
 app.stage = new PIXI.Container();
 
 gameManager.start();
@@ -58,6 +58,10 @@ app.startGame = function(){
     initUI();
     //start updating game
     update();
+}
+
+app.addChildToStage = function(c){
+    app.stage.addChild(c);
 }
 
 
@@ -131,6 +135,9 @@ function initUI(){
 },{"./gameManager.js":5,"./loader/loader.js":9,"./slot/reel.js":11,"./slot/reelLines":12,"./slot/slot.js":13,"pixi-timer":1,"pixi.js":2}],4:[function(require,module,exports){
 var objectManager = exports;
 
+var gameManager = require('./../gameManager.js');
+var PIXI = require('pixi.js');
+
 objectManager.start = function(){
     console.log("object manager started");
 }
@@ -146,8 +153,11 @@ objectManager.createObject = function(args){
     }
 }
 
-function createBackgroundObject(args){
+objectManager.createBackgroundObject = function(args){
     console.log("creating background object named: " + args.name);
+    var t = new PIXI.Sprite(gameManager.assetManager.uiAssets.resources['frame'].texture);
+    console.log(t);
+    gameManager.app.addChildToStage(t);
 }
 
 function createButtonObject(args){
@@ -158,7 +168,7 @@ function createContainerObject(args){
     console.log("creating container object");
 }
 
-},{}],5:[function(require,module,exports){
+},{"./../gameManager.js":5,"pixi.js":2}],5:[function(require,module,exports){
 /*
 This is a singleton instance which controls all of the game
 states and asset management. This is the parent node of all
@@ -167,7 +177,6 @@ in order to be able to handle all of the objects on the game
 scene.
 */
 
-var app = require('./app.js');
 var objectManager = require('./engine/objectController.js');
 var loader = require('./loader/loader.js');
 
@@ -175,9 +184,11 @@ var gameJSON = '/../../data/txt/slotGame.json';
 var assetsJSON = '/../../data/txt/assets.json';
 
 var assetData;
-var gameData = new Object();
+var gameData;
 
 var gameManager = exports;
+
+gameManager.app = require('./app.js');
 
 var counter = 0;
 var totalJSON = 2;
@@ -190,17 +201,19 @@ gameManager.start = function(){
     console.log("game manager started");
     loader.loadJSON(assetsJSON, createJSONData, "assetData");
     loader.loadJSON(gameJSON, createJSONData, "gameData");
-    //objectManager.start();
 }
 
 gameManager.initGame = function(){
-    console.log("game is being initialized");7
+    console.log("game is being initialized");
 
     //initialize slot game
     gameManager.slot.gameManager = this;
     gameManager.slot.initSlot(gameData, assetData);
 
-    app.addReelsToStage(gameData);
+    console.log("dataa: " + gameData);
+    objectManager.createBackgroundObject(gameData.scene[0]);
+
+    gameManager.app.addReelsToStage(gameData);
 }
 
 gameManager.startSpinCycle = function(){
@@ -240,6 +253,8 @@ module.exports = function(args){
 
     this.Load = function(prefix, callback){
         callbackFunc = callback;
+        console.log("assetloader args: " + args[0].texture);
+        console.log("args length: " + args.length);
         for(var i = 0; i < args.length; i++){
             loader.add(args[i].name, prefix + args[i].texture);
             loader.once('complete', onAssetsLoaded);
@@ -271,7 +286,7 @@ var gameManager = require('./../gameManager.js');
     return symbolTextures;
 }*/
 
-var totalAssetBatches = 1;
+var totalAssetBatches = 2;
 var counter = 0;
 
 assetManager.symbolTextures;
@@ -281,6 +296,9 @@ assetManager.uiAssets;
 assetManager.loadAssets = function(data){
     var smbLoader = new assetLoader(data.symbolImages);
     smbLoader.Load(data.settings.symbolTextureAssetPath, symbolsCallback)
+
+    var uiLoader = new assetLoader(data.uiImages);
+    uiLoader.Load(data.settings.uiAssetsPath, uiCallBack);
 }
 
 function symbolsCallback(data){
@@ -293,6 +311,15 @@ function checkComplete(){
     if(totalAssetBatches == counter)
         gameManager.initGame();
 }
+
+
+function uiCallBack(data){
+    assetManager.uiAssets = data;
+    console.log("assets are: " + assetManager.uiAssets.resources['frame'].texture);
+    checkComplete();
+}
+
+
 },{"./../gameManager.js":5,"./assetLoader.js":6}],8:[function(require,module,exports){
 var fileLoader = exports;
 

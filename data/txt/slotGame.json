@@ -4,8 +4,8 @@
         "totalLength": 20,
         "numberOfSymbolsOnReel": 3,
         "reelGap": 10,
-        "slotXPos": 0,
-        "slotYPos": 100,
+        "slotXPos": 260,
+        "slotYPos": 124,
         "reelItemSize": 100
     },
     "symbolProps":{

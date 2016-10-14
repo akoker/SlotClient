@@ -1,7 +1,8 @@
 {
     "settings":{
         "symbolTextureAssetPath": "/assets/symbols/",
-        "symbolAnimAssetPath": "assets/symbols/anim/"
+        "symbolAnimAssetPath": "assets/symbols/anim/",
+        "uiAssetsPath": "assets/ui/"
     },
     "symbolImages":[
         {
@@ -41,8 +42,15 @@
             "texture": "bonus.png"
         }
     ],
-    "ui":[
-        
+    "uiImages":[
+        {
+            "name" : "mainBackground",
+            "texture": "screen.png"
+        },
+        {
+            "name" : "frame",
+            "texture": "back.png"
+        }
     ],
     "animations":[
 

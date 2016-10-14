@@ -19,7 +19,7 @@ var lineContainer;
 var gameData;
 
 //create renderer and the app.stage
-var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: false});
+var renderer = PIXI.autoDetectRenderer(1280, 800,{transparent: false});
 app.stage = new PIXI.Container();
 
 gameManager.start();
@@ -32,6 +32,10 @@ app.startGame = function(){
     initUI();
     //start updating game
     update();
+}
+
+app.addChildToStage = function(c){
+    app.stage.addChild(c);
 }
 
 

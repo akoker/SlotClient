@@ -3,8 +3,8 @@ var app = require('./../app.js');
 module.exports = function (data){
     //public variables
     this.numOfSymbols = 20;
-    var symbolWidth = 128;
-    var symbolHeight = 128;
+    var symbolWidth = 144;
+    var symbolHeight = 144;
     var iterations = 4;
     var symbolPath;
     var gameData;

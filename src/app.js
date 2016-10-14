@@ -17,7 +17,7 @@ var lineContainer;
 var gameData;
 
 //create renderer and the stage
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: true});
 
 /**********place the game on the center of the screen**********/
 renderer.view.style.position = 'absolute';

@@ -1,69 +1,236 @@
 {
     "settings":{
-        "symbolTextureAssetPath": "/assets/symbols/textures/",
+        "symbolTextureAssetPath": "/assets/symbols/",
         "symbolAnimAssetPath": "assets/symbols/anim",
         "numberOfReels": 5,
         "totalLength": 20,
         "numberOfSymbolsOnReel": 3,
         "reelGap": 10,
-        "slotXPos": 60,
+        "slotXPos": 0,
         "slotYPos": 100,
         "reelItemSize": 100
     },
     "symbolProps":{
-        "symbolWidth": 128,
-        "symbolHeight": 128,
+        "symbolWidth": 144,
+        "symbolHeight": 144,
         "x": 0,
         "y": 0
     },
     "symbolImages":[
         {
             "name": "symbol01",
-            "texture": "1.jpg"
+            "texture": "1.png"
         },
         {
             "name": "symbol02",
-            "texture": "2.jpg"
+            "texture": "2.png"
         },
         {
             "name": "symbol03",
-            "texture": "3.jpg"
+            "texture": "3.png"
         },
         {
             "name": "symbol04",
-            "texture": "4.jpg"
+            "texture": "4.png"
         },
         {
             "name": "symbol05",
-            "texture": "5.jpg"
+            "texture": "5.png"
         },
         {
             "name": "symbol06",
-            "texture": "6.jpg"
+            "texture": "6.png"
         },
         {
             "name": "symbol07",
-            "texture": "7.jpg"
+            "texture": "7.png"
         },
         {
             "name": "symbol07",
-            "texture": "q.jpg"
-        },
-        {
-            "name": "symbol08",
-            "texture": "k.jpg"
-        },
-        {
-            "name": "wild",
-            "texture": "wild.jpg"
-        },
-        {
-            "name": "scatter",
-            "texture": "scatter.jpg"
+            "texture": "8.png"
         },
         {
             "name": "bonus",
-            "texture": "bonus.jpg"
+            "texture": "bonus.png"
+        }
+    ],
+    "scene":[
+        {
+            "type": "background",
+            "name": "mainBG",
+            "asset": "mainBackground",
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 800
+        },
+        {
+            "type": "slotGame",
+            "name": "game",
+            "x": 0,
+            "y": 0
+        },
+        {
+            "type": "background",
+            "name": "gameFrame",
+            "asset": "frame",
+            "x": 0,
+            "y": 0,
+            "width":1280,
+            "height":800
+        },
+        {
+            "type": "container",
+            "name": "lineButtonContainer",
+            "asset": "",
+            "x": 0,
+            "y": 0,
+            "children":[
+                {
+                    "type": "button",
+                    "name": "lineButton1",
+                    "assets":{
+                        "active":"lineButtons.1Active",
+                        "passive":"lineButtons.1Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 1
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton2",
+                    "assets":{
+                        "active":"lineButtons.2Active",
+                        "passive":"lineButtons.2Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 2
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton3",
+                    "assets":{
+                        "active":"lineButtons.3Active",
+                        "passive":"lineButtons.3Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 3
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton4",
+                    "assets":{
+                        "active":"lineButtons.4Active",
+                        "passive":"lineButtons.4Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 4
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton5",
+                    "assets":{
+                        "active":"lineButtons.4Active",
+                        "passive":"lineButtons.4Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 6
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton6",
+                    "assets":{
+                        "active":"lineButtons.5Active",
+                        "passive":"lineButtons.5Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 6
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton7",
+                    "assets":{
+                        "active":"lineButtons.7Active",
+                        "passive":"lineButtons.7Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 7
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton8",
+                    "assets":{
+                        "active":"lineButtons.8Active",
+                        "passive":"lineButtons.8Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 8
+                        }
+                    }
+                },
+                {
+                    "type": "button",
+                    "name": "lineButton9",
+                    "assets":{
+                        "active":"lineButtons.9Active",
+                        "passive":"lineButtons.9Passive" 
+                    },
+                    "x": 0,
+                    "y": 0,
+                    "actions":{
+                        "onClick":{
+                            "toggleButtonState":"",
+                            "setLines": 9
+                        }
+                    }
+                }
+            ]
         }
     ]
 }

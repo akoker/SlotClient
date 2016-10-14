@@ -39,8 +39,8 @@ slot.initSlot = function(data){
     //get reelData from simulated server
     slot.reelData = server.randomizeReels(reelItemSize);
 
-    for(var i = 0 ; i < numberOfReels ; i++)
-    console.log("reel data" + i + ":     " + slot.reelData[i]);
+    /*for(var i = 0 ; i < numberOfReels ; i++)
+    console.log("reel data" + i + ":     " + slot.reelData[i]);*/
 
     //get randomized spin data to randomize initial reel position
     slot.spinData = server.randomizeSpin();

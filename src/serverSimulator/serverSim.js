@@ -6,7 +6,7 @@ server.noOfReels = 5;
 server.reelSize = 100;
 server.reels = new Array();
 server.spinData = new Array();
-server.numberOfSymbolAssets = 12;
+server.numberOfSymbolAssets = 9;
 
 server.randomizeSpin = function (){
     server.spinData = new Array();
@@ -24,7 +24,7 @@ server.randomizeReels = function (rSize){
     for(var i = 0; i < server.noOfReels; i++){
         var rl =new Array();
         for(var j = 0; j < rSize; j++){
-            rl.push(Math.floor((Math.random() * server.numberOfSymbolAssets) + 0));
+            rl.push(Math.floor((Math.random() * (server.numberOfSymbolAssets)) + 0));
         }
         server.reels.push(rl);
     }

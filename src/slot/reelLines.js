@@ -5,11 +5,11 @@ var reelLines = exports;
 //drawing functions run dynamically
 var p = [2,1,1,2,0];
 var pArgs = new Object();
-pArgs.leftPos = 60;
+pArgs.leftPos = 0;
 pArgs.rightPos = 740;
 pArgs.topMargin = 100;
-pArgs.symbolWidth = 128;
-pArgs.symbolHeight = 128;
+pArgs.symbolWidth = 144;
+pArgs.symbolHeight = 144;
 pArgs.reelMargin = 10;
 pArgs.numberOfReels = 5;
 

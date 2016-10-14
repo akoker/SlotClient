@@ -1,5 +1,7 @@
 var assetManager = exports;
 
+
+
 assetManager.getSymbolTextures = function(gameData){
     var symTPath = gameData.settings.symbolTextureAssetPath;
     console.log("loading symbol textures");

@@ -1,36 +1,26 @@
 0 info it worked if it ends with ok
 1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
 1 verbose cli   'C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'run',
+1 verbose cli   'start',
 1 verbose cli   'watch' ]
 2 info using npm@3.10.8
 3 info using node@v4.4.7
-4 verbose run-script [ 'prewatch', 'watch', 'postwatch' ]
-5 info lifecycle slotclient@1.0.0~prewatch: slotclient@1.0.0
-6 silly lifecycle slotclient@1.0.0~prewatch: no script for prewatch, continuing
-7 info lifecycle slotclient@1.0.0~watch: slotclient@1.0.0
-8 verbose lifecycle slotclient@1.0.0~watch: unsafe-perm in lifecycle true
-9 verbose lifecycle slotclient@1.0.0~watch: PATH: C:\Users\asus\AppData\Roaming\npm\node_modules\npm\bin\node-gyp-bin;D:\HTML5\SlotClient\node_modules\.bin;C:\Users\asus\AppData\Roaming\npm;C:\Program Files\nodejs\;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;D:\Program Files (x86)\Crytek\CRYENGINE Launcher\Crytek\CRYENGINE_5.1\bin\win_x64;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\nodejs\;C:\Program Files (x86)\GtkSharp\2.12\bin;D:\Program Files (x86)\GitExtensions\;C:\Program Files\Git\cmd;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;d:\HaxeToolkit\haxe\;d:\HaxeToolkit\neko;C:\Users\asus\AppData\Local\Programs\Python\Python35-32\Scripts\;C:\Users\asus\AppData\Local\Programs\Python\Python35-32\;d:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\asus\AppData\Roaming\npm;C:\Users\asus\AppData\Local\Microsoft\WindowsApps
-10 verbose lifecycle slotclient@1.0.0~watch: CWD: D:\HTML5\SlotClient
-11 silly lifecycle slotclient@1.0.0~watch: Args: [ '/d /s /c', 'watchify src/app.js -o src/bundle.js' ]
-12 verbose stack Error: kill ENOSYS
-12 verbose stack     at exports._errnoException (util.js:873:11)
-12 verbose stack     at process.kill (node.js:777:15)
-12 verbose stack     at process.listener (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:86:15)
-12 verbose stack     at emitNone (events.js:72:20)
-12 verbose stack     at process.emit (events.js:166:7)
-12 verbose stack     at processEmit (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:146:32)
-12 verbose stack     at processEmit (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\npm-registry-client\node_modules\npmlog\node_modules\gauge\node_modules\signal-exit\index.js:146:32)
-12 verbose stack     at Signal.wrap.onsignal (node.js:804:46)
-13 verbose cwd D:\HTML5\SlotClient
-14 error Windows_NT 10.0.14393
-15 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js" "run" "watch"
-16 error node v4.4.7
-17 error npm  v3.10.8
-18 error code ENOSYS
-19 error errno ENOSYS
-20 error syscall kill
-21 error kill ENOSYS
-22 error If you need help, you may report this error at:
-22 error     <https://github.com/npm/npm/issues>
-23 verbose exit [ 1, true ]
+4 verbose stack Error: missing script: start
+4 verbose stack     at run (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\lib\run-script.js:151:19)
+4 verbose stack     at C:\Users\asus\AppData\Roaming\npm\node_modules\npm\lib\run-script.js:61:5
+4 verbose stack     at C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\read-package-json\read-json.js:356:5
+4 verbose stack     at checkBinReferences_ (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\read-package-json\read-json.js:320:45)
+4 verbose stack     at final (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\read-package-json\read-json.js:354:3)
+4 verbose stack     at then (C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\read-package-json\read-json.js:124:5)
+4 verbose stack     at C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\read-package-json\read-json.js:311:12
+4 verbose stack     at C:\Users\asus\AppData\Roaming\npm\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:78:16
+4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:380:3)
+5 verbose cwd D:\HTML5\SlotClient
+6 error Windows_NT 10.0.14393
+7 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\asus\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js" "start" "watch"
+8 error node v4.4.7
+9 error npm  v3.10.8
+10 error missing script: start
+11 error If you need help, you may report this error at:
+11 error     <https://github.com/npm/npm/issues>
+12 verbose exit [ 1, true ]

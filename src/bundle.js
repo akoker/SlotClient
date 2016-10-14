@@ -40,7 +40,7 @@ var lineContainer;
 var gameData;
 
 //create renderer and the stage
-var renderer = PIXI.autoDetectRenderer(800, 600,{backgroundColor : 0x1099bb});
+var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: true});
 
 /**********place the game on the center of the screen**********/
 renderer.view.style.position = 'absolute';
@@ -118,6 +118,8 @@ function update(){
 },{"./loader/loader.js":5,"./slot/reel.js":7,"./slot/reelLines":8,"./slot/slot.js":9,"pixi.js":1}],3:[function(require,module,exports){
 var assetManager = exports;
 
+
+
 assetManager.getSymbolTextures = function(gameData){
     var symTPath = gameData.settings.symbolTextureAssetPath;
     console.log("loading symbol textures");
@@ -191,7 +193,7 @@ server.noOfReels = 5;
 server.reelSize = 100;
 server.reels = new Array();
 server.spinData = new Array();
-server.numberOfSymbolAssets = 12;
+server.numberOfSymbolAssets = 9;
 
 server.randomizeSpin = function (){
     server.spinData = new Array();
@@ -209,7 +211,7 @@ server.randomizeReels = function (rSize){
     for(var i = 0; i < server.noOfReels; i++){
         var rl =new Array();
         for(var j = 0; j < rSize; j++){
-            rl.push(Math.floor((Math.random() * server.numberOfSymbolAssets) + 0));
+            rl.push(Math.floor((Math.random() * (server.numberOfSymbolAssets)) + 0));
         }
         server.reels.push(rl);
     }
@@ -221,8 +223,8 @@ var app = require('./../app.js');
 module.exports = function (data){
     //public variables
     this.numOfSymbols = 20;
-    var symbolWidth = 128;
-    var symbolHeight = 128;
+    var symbolWidth = 144;
+    var symbolHeight = 144;
     var iterations = 4;
     var symbolPath;
     var gameData;
@@ -335,11 +337,11 @@ var reelLines = exports;
 //drawing functions run dynamically
 var p = [2,1,1,2,0];
 var pArgs = new Object();
-pArgs.leftPos = 60;
+pArgs.leftPos = 0;
 pArgs.rightPos = 740;
 pArgs.topMargin = 100;
-pArgs.symbolWidth = 128;
-pArgs.symbolHeight = 128;
+pArgs.symbolWidth = 144;
+pArgs.symbolHeight = 144;
 pArgs.reelMargin = 10;
 pArgs.numberOfReels = 5;
 
@@ -428,8 +430,8 @@ slot.initSlot = function(data){
     //get reelData from simulated server
     slot.reelData = server.randomizeReels(reelItemSize);
 
-    for(var i = 0 ; i < numberOfReels ; i++)
-    console.log("reel data" + i + ":     " + slot.reelData[i]);
+    /*for(var i = 0 ; i < numberOfReels ; i++)
+    console.log("reel data" + i + ":     " + slot.reelData[i]);*/
 
     //get randomized spin data to randomize initial reel position
     slot.spinData = server.randomizeSpin();

@@ -1,5 +1,6 @@
 var slot = exports;
 
+var PIXI = require('pixi.js');
 var server = require('./../serverSimulator/serverSim.js');
 var reel = require('./reel.js');
 var reelGap;
@@ -9,8 +10,6 @@ var slotXPos;
 var slotYPos;
 var numberOfReels;
 var reelItemSize;
-
-
 
 slot.reelArr = new Array();//array of reel containers
 slot.symbolTextures;
@@ -42,11 +41,13 @@ slot.initSlot = function(gData, aData){
     //get reelData from simulated server
     slot.reelData = server.randomizeReels(reelItemSize);
 
-    /*for(var i = 0 ; i < numberOfReels ; i++)
-    console.log("reel data" + i + ":     " + slot.reelData[i]);*/
 
     //get randomized spin data to randomize initial reel position
     slot.spinData = server.randomizeSpin();
+    
+    //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
+    console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
+      
 
     //create reels
     for(var i = 0; i < numberOfReels; i++){
@@ -54,8 +55,6 @@ slot.initSlot = function(gData, aData){
         var r = new reel(slot.reelData[i], slot.gameData, slot.assetData);
         r.createReel(slot.spinData[i], slot.gameManager.assetManager.symbolTextures, slot.reelData[i]);
         
-        //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
-        console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
         
         //set reel Positions
         r.tile.position.x = slotXPos + (symbolWidth+reelGap) * i;
@@ -64,6 +63,7 @@ slot.initSlot = function(gData, aData){
         //push reels into reel array
         slot.reelArr.push(r);
     }
+      
 }
 
 slot.startSpin = function(){
@@ -79,8 +79,15 @@ slot.startSpin = function(){
     
     //if not spinning, start spinning each reel, if spinning, stop them and set the final position
     for(var i = 0; i < 5; i++){
-        if(!slot.reelArr[i].isSpinning)
-            slot.reelArr[i].startSpin(slot.spinData[i]);
+        if(!slot.reelArr[i].isSpinning){
+
+            var t = PIXI.timerManager.createTimer(400 * i + 0.1);
+            t.start()
+            t.index = i;
+            t.on('end', function(){
+                slot.reelArr[this.index].startSpin(slot.spinData[this.index]);
+            });
+        }
         else
             slot.reelArr[i].stopReel(slot.spinData[i]);
     }

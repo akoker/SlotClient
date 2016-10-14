@@ -28,7 +28,6 @@ assetManager.loadAssets = function(data){
 
 function symbolsCallback(data){
     assetManager.symbolTextures = data;
-    console.log("symbol textures: " + assetManager.symbolTextures);
     checkComplete();
 }
 

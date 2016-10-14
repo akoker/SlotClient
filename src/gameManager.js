@@ -42,9 +42,15 @@ gameManager.initGame = function(){
     app.addReelsToStage(gameData);
 }
 
-function createJSONData(data, varName){
-    console.log("assetData: " + data);
+gameManager.startSpinCycle = function(){
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        if(gameManager.slot.reelArr[i].isSpinning){
+            gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
+        }
+    }
+}
 
+function createJSONData(data, varName){
     if(varName == "assetData")
         assetData = data;
     else if(varName == "gameData")

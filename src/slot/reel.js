@@ -8,9 +8,8 @@ module.exports = function (reelData, gameData, assetData){
     var symbolHeight = 144;
     var iterations = 4;
     var symbolPath;
-    //var gameData;
     this.isSpinning = false;
-    this.spinSpeed = 14;
+    this.spinSpeed = 12;
     this.maxSpeed = 40;
     var spinInc = this.spinSpeed;
     this.textureArr;
@@ -19,7 +18,6 @@ module.exports = function (reelData, gameData, assetData){
     this.gameData = gameData;
     this.assetData = assetData;
     this.reelData = reelData;
-    console.log("datta gitti: " + assetData);
 
     //reelcontainer
     this.cont = new PIXI.Container();
@@ -38,12 +36,9 @@ module.exports = function (reelData, gameData, assetData){
 
     //init reel
     this.createReel = function(target, textureArr){
-        //console.log(gameData);
         this.textureArr = textureArr;
-        console.log("textureArr: " + this.textureArr);
         for(var i = 0; i<this.numOfSymbols; i++){
-            //resources['symbol03'].texture);
-            var s = new PIXI.Sprite(textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);//reelData[normalizeIndexNumber(target+i, reelData.length)]
+            var s = new PIXI.Sprite(textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);
             s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
@@ -53,7 +48,7 @@ module.exports = function (reelData, gameData, assetData){
     this.replaceTexture = function(target){
         this.cont.removeChildren();
         for(var i = 0; i<this.numOfSymbols; i++){
-            var s = new PIXI.Sprite(this.textureArr[reelData[normalizeIndexNumber(target+i, reelData.length)]]);
+            var s = new PIXI.Sprite(this.textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);
             s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
@@ -78,7 +73,6 @@ module.exports = function (reelData, gameData, assetData){
         //while on top speed, replace textures according to the target
         else if(this.tile.tilePosition.y > (iterations*symbolHeight*this.numOfSymbols)*0.6 && this.tile.tilePosition.y < (iterations*symbolHeight*this.numOfSymbols)*0.8){
             if(!this.textureChanged){
-                console.log("texture was changed");
                 this.cont = this.replaceTexture(this.currentTarget);
             }
         }
@@ -114,5 +108,4 @@ function normalizeIndexNumber(ind, arraySize){
         return Math.abs(arraySize - ind);
     }else
         return ind;
-    //return (arraySize - ind) < 0 ? Math.abs(arraySize-ind + 1) : ind;
 }

@@ -1,4 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){function t(r){if(i[r])return i[r].exports;var n=i[r]={exports:{},id:r,loaded:!1};return e[r].call(n.exports,n,n.exports,t),n.loaded=!0,n.exports}var i={};return t.m=e,t.c=i,t.p="",t(0)}([function(e,t,i){e.exports=i(4)},function(e,t,i){"use strict";function r(e){return e&&e.__esModule?e:{"default":e}}function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function a(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}var o=function(){function e(e,t){for(var i=0;i<t.length;i++){var r=t[i];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,i,r){return i&&e(t.prototype,i),r&&e(t,r),t}}();Object.defineProperty(t,"__esModule",{value:!0});var u=i(2),l=r(u),h=function(e){function t(){var e=arguments.length<=0||void 0===arguments[0]?1:arguments[0],i=arguments[1];n(this,t);var r=a(this,Object.getPrototypeOf(t).call(this));return r.time=e,i&&r.addTo(i),r.active=!1,r.isEnded=!1,r.isStarted=!1,r.expire=!1,r.delay=0,r.repeat=0,r.loop=!1,r._delayTime=0,r._elapsedTime=0,r._repeat=0,r}return s(t,e),o(t,[{key:"addTo",value:function(e){return this.manager=e,this.manager.addTimer(this),this}},{key:"remove",value:function(){return this.manager?(this.manager.removeTimer(this),this):void 0}},{key:"start",value:function(){return this.active=!0,this}},{key:"stop",value:function(){return this.active=!1,this.emit("stop",this._elapsedTime),this}},{key:"reset",value:function(){return this._elapsedTime=0,this._repeat=0,this._delayTime=0,this.isStarted=!1,this.isEnded=!1,this}},{key:"update",value:function(e,t){if(this.active){if(this.delay>this._delayTime)return void(this._delayTime+=t);if(this.isStarted||(this.isStarted=!0,this.emit("start",this._elapsedTime)),this.time>this._elapsedTime){var i=this._elapsedTime+t,r=i>=this.time;if(this._elapsedTime=r?this.time:i,this.emit("update",this._elapsedTime,e),r){if(this.loop||this.repeat>this._repeat)return this._repeat++,this.emit("repeat",this._elapsedTime,this._repeat),void(this._elapsedTime=0);this.isEnded=!0,this.active=!1,this.emit("end",this._elapsedTime)}}}}}]),t}(l["default"].utils.EventEmitter);t["default"]=h},function(e,t){e.exports=PIXI},function(e,t,i){"use strict";function r(e){return e&&e.__esModule?e:{"default":e}}function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var a=function(){function e(e,t){for(var i=0;i<t.length;i++){var r=t[i];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,i,r){return i&&e(t.prototype,i),r&&e(t,r),t}}();Object.defineProperty(t,"__esModule",{value:!0});var s=i(1),o=r(s),u=function(){function e(){n(this,e),this.timers=[],this._timersToDelete=[],this._last=0}return a(e,[{key:"update",value:function(e){var t=void 0;e||0===e?t=1e3*e:(t=this._getDeltaMS(),e=t/1e3);for(var i=0;i<this.timers.length;i++){var r=this.timers[i];r.active&&(r.update(e,t),r.isEnded&&r.expire&&r.remove())}if(this._timersToDelete.length){for(var i=0;i<this._timersToDelete.length;i++)this._remove(this._timersToDelete[i]);this._timersToDelete.length=0}}},{key:"removeTimer",value:function(e){this._timersToDelete.push(e)}},{key:"addTimer",value:function(e){e.manager=this,this.timers.push(e)}},{key:"createTimer",value:function(e){return new o["default"](e,this)}},{key:"_remove",value:function(e){var t=this.timers.indexOf(e);t>0&&this.timers.splice(t,1)}},{key:"_getDeltaMS",value:function(){0===this._last&&(this._last=Date.now());var e=Date.now(),t=e-this._last;return this._last=e,t}}]),e}();t["default"]=u},function(e,t,i){"use strict";function r(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(t,"__esModule",{value:!0});var n=i(2),a=r(n),s=i(3),o=r(s),u=i(1),l=r(u),h={TimerManager:o["default"],Timer:l["default"]};a["default"].timerManager||(a["default"].timerManager=new o["default"],a["default"].timer=h),t["default"]=h}]);
+
+},{}],2:[function(require,module,exports){
 (function (global){
 /*!
  * pixi.js - v4.0.3
@@ -20,8 +23,9 @@ this.processInteractive(this.mouse.global,this.renderer._lastObjectRendered,this
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var PIXI = require('pixi.js');
+var timer = require('pixi-timer');
 var slot = require('./slot/slot.js');
 var reel = require('./slot/reel.js');
 var loader = require('./loader/loader.js');
@@ -40,36 +44,52 @@ var winLineButton;
 var lineContainer;
 var gameData;
 
-//create renderer and the stage
+//create renderer and the app.stage
 var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: false});
+app.stage = new PIXI.Container();
 
 gameManager.start();
 
-/**********place the game on the center of the screen**********/
-renderer.view.style.position = 'absolute';
-renderer.view.style.left = '50%';
-renderer.view.style.top = '50%';
-renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';
-/**************************************************************/
 
-var stage = new PIXI.Container();
-
-//append renderer viewport to gamediv on html file
-var gameDiv = document.getElementById('gameDiv');
-gameDiv.appendChild(renderer.view);
-
-//start loader
-//loader.startLoader(nrOfTxtToLoad);
 
 //function initializes the game after load is completed. callback by loader.js
-app.startGame = function(data){
-    
+app.startGame = function(){
 
-    /*lineContainer = new PIXI.Container;
+    initUI();
+    //start updating game
+    update();
+}
+
+
+app.addReelsToStage = function(data){
+    console.log("adding reels");
     gameData = data;
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        app.stage.addChild(gameManager.slot.reelArr[i].tile);
+    }
+    app.startGame();
+}
 
+//updates frame
+function update(){
+    requestAnimationFrame(update);
+    renderer.render(app.stage);
+    PIXI.timerManager.update();
 
-    
+    //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
+    if(gameData!=null){
+        for(var i = 0; i < gameData.settings.numberOfReels; i++){
+            renderer.render(gameManager.slot.reelArr[i].cont, gameManager.slot.reelArr[i].rendText);
+            if(gameManager.slot.reelArr[i].isSpinning){
+                gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
+            }
+        }
+    }
+}
+
+function initUI(){
+    lineContainer = new PIXI.Container;
+
     //spin button and its handler are created
     spinButton = document.getElementById('spinButton');
     spinButton.onclick = function(){
@@ -91,46 +111,24 @@ app.startGame = function(data){
         lineContainer.removeChildren();
         console.log("winLineButton is clicked");
         lineContainer.addChild(reelLine.drawWinningLine());
-    }*/
-
-    //add tiling sprites of the reels to the stage after initialization
-
-    /*
-    //needs to be added to the stage after reels in order to be on the top layer
-    stage.addChild(lineContainer);*/
-
-    //start updating game
-}
-
-update();
-
-app.addReelsToStage = function(data){
-    console.log("adding reels");
-    gameData = data;
-    for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        stage.addChild(gameManager.slot.reelArr[i].tile);
     }
-    console.log("textür: " + gameManager.assetManager.symbolTextures.resources['symbol03'].texture);
-}
+    
+    //needs to be added to the app.stage after reels in order to be on the top layer
+    app.stage.addChild(lineContainer);
 
-//updates frame
-function update(){
-    requestAnimationFrame(update);
-    renderer.render(stage);
+    /**********place the game on the center of the screen**********/
+    renderer.view.style.position = 'absolute';
+    renderer.view.style.left = '50%';
+    renderer.view.style.top = '50%';
+    renderer.view.style.transform = 'translate3d( -50%, -50%, 0 )';
+    /**************************************************************/
 
-    //console.log('reel: ' + gameManager.slot);
-    //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
-    if(gameData!=null){
-        
-        for(var i = 0; i < gameData.settings.numberOfReels; i++){
-            renderer.render(gameManager.slot.reelArr[i].cont, gameManager.slot.reelArr[i].rendText);
-            /*if(gameManager.slot.reelArr[i].isSpinning){
-                gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
-            }*/
-        }
-    }
+    //append renderer viewport to gamediv on html file
+    var gameDiv = document.getElementById('gameDiv');
+    gameDiv.appendChild(renderer.view);
+
 }
-},{"./gameManager.js":4,"./loader/loader.js":8,"./slot/reel.js":10,"./slot/reelLines":11,"./slot/slot.js":12,"pixi.js":1}],3:[function(require,module,exports){
+},{"./gameManager.js":5,"./loader/loader.js":9,"./slot/reel.js":11,"./slot/reelLines":12,"./slot/slot.js":13,"pixi-timer":1,"pixi.js":2}],4:[function(require,module,exports){
 var objectManager = exports;
 
 objectManager.start = function(){
@@ -160,7 +158,7 @@ function createContainerObject(args){
     console.log("creating container object");
 }
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*
 This is a singleton instance which controls all of the game
 states and asset management. This is the parent node of all
@@ -205,9 +203,15 @@ gameManager.initGame = function(){
     app.addReelsToStage(gameData);
 }
 
-function createJSONData(data, varName){
-    console.log("assetData: " + data);
+gameManager.startSpinCycle = function(){
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        if(gameManager.slot.reelArr[i].isSpinning){
+            gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
+        }
+    }
+}
 
+function createJSONData(data, varName){
     if(varName == "assetData")
         assetData = data;
     else if(varName == "gameData")
@@ -225,7 +229,7 @@ function checkJSONComplete(){
 function createAssets(data){
     gameManager.assetManager.loadAssets(data, gameManager.slot);
 }
-},{"./app.js":2,"./engine/objectController.js":3,"./loader/assetManager.js":6,"./loader/loader.js":8,"./slot/slot.js":12}],5:[function(require,module,exports){
+},{"./app.js":3,"./engine/objectController.js":4,"./loader/assetManager.js":7,"./loader/loader.js":9,"./slot/slot.js":13}],6:[function(require,module,exports){
 var PIXI = require('pixi.js');
 
 module.exports = function(args){
@@ -250,7 +254,7 @@ module.exports = function(args){
     }
     return this;
 }
-},{"pixi.js":1}],6:[function(require,module,exports){
+},{"pixi.js":2}],7:[function(require,module,exports){
 var assetManager = exports;
 
 var assetLoader = require('./assetLoader.js');
@@ -281,7 +285,6 @@ assetManager.loadAssets = function(data){
 
 function symbolsCallback(data){
     assetManager.symbolTextures = data;
-    console.log("symbol textures: " + assetManager.symbolTextures);
     checkComplete();
 }
 
@@ -290,7 +293,7 @@ function checkComplete(){
     if(totalAssetBatches == counter)
         gameManager.initGame();
 }
-},{"./../gameManager.js":4,"./assetLoader.js":5}],7:[function(require,module,exports){
+},{"./../gameManager.js":5,"./assetLoader.js":6}],8:[function(require,module,exports){
 var fileLoader = exports;
 
 fileLoader.loadJSON = function (path, callback) {
@@ -306,7 +309,7 @@ fileLoader.loadJSON = function (path, callback) {
     }
     xobj.send(null);
 }
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var app = require('./../app.js');
 var slot = require('./../slot/slot.js');
 var fileLoader = require('./fileLoader');
@@ -318,7 +321,7 @@ var loadedCounter = 0;
 var toLoad;
 
 function jsonLoadResponse(dataVar){
-    ("Game data is loading");
+    console.log("Game data is loading");
     return dataVar;
 }
 
@@ -328,7 +331,6 @@ loader.start = function(counter){
 
 //loaderCtr keeps data of how many json files will be loaded
 loader.loadJSON = function (path, callback, arg){
-    console.log("Loader is initiated, path: " + path);
     //Get game data from json
     fileLoader.loadJSON(path, function f(response){
         gameData = JSON.parse(jsonLoadResponse(response));
@@ -339,10 +341,9 @@ loader.loadJSON = function (path, callback, arg){
 loader.loadComplete = function (callback, arg){
     //slot.symbolTextures = assetManager.getSymbolTextures(gameData);
     console.log("All assets are loaded, starting game...");
-    console.log("gamedata on loader: " + gameData);
     callback(gameData, arg);
 }
-},{"./../app.js":2,"./../slot/slot.js":12,"./assetManager":6,"./fileLoader":7}],9:[function(require,module,exports){
+},{"./../app.js":3,"./../slot/slot.js":13,"./assetManager":7,"./fileLoader":8}],10:[function(require,module,exports){
 var server = exports;
 
 server.name = "game server";
@@ -375,7 +376,7 @@ server.randomizeReels = function (rSize){
     }
     return server.reels;
 }
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var app = require('./../app.js');
 
 module.exports = function (reelData, gameData, assetData){
@@ -386,9 +387,8 @@ module.exports = function (reelData, gameData, assetData){
     var symbolHeight = 144;
     var iterations = 4;
     var symbolPath;
-    //var gameData;
     this.isSpinning = false;
-    this.spinSpeed = 14;
+    this.spinSpeed = 12;
     this.maxSpeed = 40;
     var spinInc = this.spinSpeed;
     this.textureArr;
@@ -397,7 +397,6 @@ module.exports = function (reelData, gameData, assetData){
     this.gameData = gameData;
     this.assetData = assetData;
     this.reelData = reelData;
-    console.log("datta gitti: " + assetData);
 
     //reelcontainer
     this.cont = new PIXI.Container();
@@ -416,12 +415,9 @@ module.exports = function (reelData, gameData, assetData){
 
     //init reel
     this.createReel = function(target, textureArr){
-        //console.log(gameData);
         this.textureArr = textureArr;
-        console.log("textureArr: " + this.textureArr);
         for(var i = 0; i<this.numOfSymbols; i++){
-            //resources['symbol03'].texture);
-            var s = new PIXI.Sprite(textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);//reelData[normalizeIndexNumber(target+i, reelData.length)]
+            var s = new PIXI.Sprite(textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);
             s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
@@ -431,7 +427,7 @@ module.exports = function (reelData, gameData, assetData){
     this.replaceTexture = function(target){
         this.cont.removeChildren();
         for(var i = 0; i<this.numOfSymbols; i++){
-            var s = new PIXI.Sprite(this.textureArr[reelData[normalizeIndexNumber(target+i, reelData.length)]]);
+            var s = new PIXI.Sprite(this.textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);
             s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
@@ -456,7 +452,6 @@ module.exports = function (reelData, gameData, assetData){
         //while on top speed, replace textures according to the target
         else if(this.tile.tilePosition.y > (iterations*symbolHeight*this.numOfSymbols)*0.6 && this.tile.tilePosition.y < (iterations*symbolHeight*this.numOfSymbols)*0.8){
             if(!this.textureChanged){
-                console.log("texture was changed");
                 this.cont = this.replaceTexture(this.currentTarget);
             }
         }
@@ -492,9 +487,8 @@ function normalizeIndexNumber(ind, arraySize){
         return Math.abs(arraySize - ind);
     }else
         return ind;
-    //return (arraySize - ind) < 0 ? Math.abs(arraySize-ind + 1) : ind;
 }
-},{"./../app.js":2}],11:[function(require,module,exports){
+},{"./../app.js":3}],12:[function(require,module,exports){
 var PIXI = require('pixi.js');
 var reelLines = exports;
 
@@ -553,9 +547,10 @@ function randomizeReelLines(){
     }
     console.log("winning line: " + p[0] + " " + p[1] + " " + p[2] + " " + p[3] + " " + p[4]);
 }
-},{"pixi.js":1}],12:[function(require,module,exports){
+},{"pixi.js":2}],13:[function(require,module,exports){
 var slot = exports;
 
+var PIXI = require('pixi.js');
 var server = require('./../serverSimulator/serverSim.js');
 var reel = require('./reel.js');
 var reelGap;
@@ -565,8 +560,6 @@ var slotXPos;
 var slotYPos;
 var numberOfReels;
 var reelItemSize;
-
-
 
 slot.reelArr = new Array();//array of reel containers
 slot.symbolTextures;
@@ -598,11 +591,13 @@ slot.initSlot = function(gData, aData){
     //get reelData from simulated server
     slot.reelData = server.randomizeReels(reelItemSize);
 
-    /*for(var i = 0 ; i < numberOfReels ; i++)
-    console.log("reel data" + i + ":     " + slot.reelData[i]);*/
 
     //get randomized spin data to randomize initial reel position
     slot.spinData = server.randomizeSpin();
+    
+    //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
+    console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
+      
 
     //create reels
     for(var i = 0; i < numberOfReels; i++){
@@ -610,8 +605,6 @@ slot.initSlot = function(gData, aData){
         var r = new reel(slot.reelData[i], slot.gameData, slot.assetData);
         r.createReel(slot.spinData[i], slot.gameManager.assetManager.symbolTextures, slot.reelData[i]);
         
-        //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
-        console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
         
         //set reel Positions
         r.tile.position.x = slotXPos + (symbolWidth+reelGap) * i;
@@ -620,6 +613,7 @@ slot.initSlot = function(gData, aData){
         //push reels into reel array
         slot.reelArr.push(r);
     }
+      
 }
 
 slot.startSpin = function(){
@@ -635,10 +629,17 @@ slot.startSpin = function(){
     
     //if not spinning, start spinning each reel, if spinning, stop them and set the final position
     for(var i = 0; i < 5; i++){
-        if(!slot.reelArr[i].isSpinning)
-            slot.reelArr[i].startSpin(slot.spinData[i]);
+        if(!slot.reelArr[i].isSpinning){
+
+            var t = PIXI.timerManager.createTimer(400 * i + 0.1);
+            t.start()
+            t.index = i;
+            t.on('end', function(){
+                slot.reelArr[this.index].startSpin(slot.spinData[this.index]);
+            });
+        }
         else
             slot.reelArr[i].stopReel(slot.spinData[i]);
     }
 }
-},{"./../serverSimulator/serverSim.js":9,"./reel.js":10}]},{},[2]);
+},{"./../serverSimulator/serverSim.js":10,"./reel.js":11,"pixi.js":2}]},{},[3]);

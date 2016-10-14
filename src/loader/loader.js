@@ -9,7 +9,7 @@ var loadedCounter = 0;
 var toLoad;
 
 function jsonLoadResponse(dataVar){
-    ("Game data is loading");
+    console.log("Game data is loading");
     return dataVar;
 }
 
@@ -19,7 +19,6 @@ loader.start = function(counter){
 
 //loaderCtr keeps data of how many json files will be loaded
 loader.loadJSON = function (path, callback, arg){
-    console.log("Loader is initiated, path: " + path);
     //Get game data from json
     fileLoader.loadJSON(path, function f(response){
         gameData = JSON.parse(jsonLoadResponse(response));
@@ -30,6 +29,5 @@ loader.loadJSON = function (path, callback, arg){
 loader.loadComplete = function (callback, arg){
     //slot.symbolTextures = assetManager.getSymbolTextures(gameData);
     console.log("All assets are loaded, starting game...");
-    console.log("gamedata on loader: " + gameData);
     callback(gameData, arg);
 }

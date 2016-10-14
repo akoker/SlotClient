@@ -3,6 +3,7 @@ var slot = require('./slot/slot.js');
 var reel = require('./slot/reel.js');
 var loader = require('./loader/loader.js');
 var reelLine = require('./slot/reelLines');
+var gameManager = require('./gameManager.js');
 
 var app = exports;
 
@@ -19,6 +20,8 @@ var gameData;
 //create renderer and the stage
 var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: true});
 
+gameManager.start();
+
 /**********place the game on the center of the screen**********/
 renderer.view.style.position = 'absolute';
 renderer.view.style.left = '50%';
@@ -33,13 +36,17 @@ var gameDiv = document.getElementById('gameDiv');
 gameDiv.appendChild(renderer.view);
 
 //start loader
-loader.startLoader(nrOfTxtToLoad);
+//loader.startLoader(nrOfTxtToLoad);
 
 //function initializes the game after load is completed. callback by loader.js
 app.startGame = function(data){
-    lineContainer = new PIXI.Container;
+    
+
+    /*lineContainer = new PIXI.Container;
     gameData = data;
 
+
+    
     //spin button and its handler are created
     spinButton = document.getElementById('spinButton');
     spinButton.onclick = function(){
@@ -73,7 +80,7 @@ app.startGame = function(data){
 
 
     //needs to be added to the stage after reels in order to be on the top layer
-    stage.addChild(lineContainer);
+    stage.addChild(lineContainer);*/
 
     //start updating game
     update();
@@ -85,10 +92,10 @@ function update(){
     renderer.render(stage);
 
     //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
-    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+    /*for(var i = 0; i < gameData.settings.numberOfReels; i++){
         renderer.render(slot.reelArr[i].cont, slot.reelArr[i].rendText);
         if(slot.reelArr[i].isSpinning){
             slot.reelArr[i].spinReel(gameData.settings.totalLength);
         }
-    }
+    }*/
 }

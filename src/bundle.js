@@ -26,6 +26,7 @@ var slot = require('./slot/slot.js');
 var reel = require('./slot/reel.js');
 var loader = require('./loader/loader.js');
 var reelLine = require('./slot/reelLines');
+var gameManager = require('./gameManager.js');
 
 var app = exports;
 
@@ -42,6 +43,8 @@ var gameData;
 //create renderer and the stage
 var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: true});
 
+gameManager.start();
+
 /**********place the game on the center of the screen**********/
 renderer.view.style.position = 'absolute';
 renderer.view.style.left = '50%';
@@ -56,13 +59,17 @@ var gameDiv = document.getElementById('gameDiv');
 gameDiv.appendChild(renderer.view);
 
 //start loader
-loader.startLoader(nrOfTxtToLoad);
+//loader.startLoader(nrOfTxtToLoad);
 
 //function initializes the game after load is completed. callback by loader.js
 app.startGame = function(data){
-    lineContainer = new PIXI.Container;
+    
+
+    /*lineContainer = new PIXI.Container;
     gameData = data;
 
+
+    
     //spin button and its handler are created
     spinButton = document.getElementById('spinButton');
     spinButton.onclick = function(){
@@ -96,7 +103,7 @@ app.startGame = function(data){
 
 
     //needs to be added to the stage after reels in order to be on the top layer
-    stage.addChild(lineContainer);
+    stage.addChild(lineContainer);*/
 
     //start updating game
     update();
@@ -108,17 +115,63 @@ function update(){
     renderer.render(stage);
 
     //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
-    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+    /*for(var i = 0; i < gameData.settings.numberOfReels; i++){
         renderer.render(slot.reelArr[i].cont, slot.reelArr[i].rendText);
         if(slot.reelArr[i].isSpinning){
             slot.reelArr[i].spinReel(gameData.settings.totalLength);
         }
+    }*/
+}
+},{"./gameManager.js":4,"./loader/loader.js":7,"./slot/reel.js":9,"./slot/reelLines":10,"./slot/slot.js":11,"pixi.js":1}],3:[function(require,module,exports){
+var objectManager = exports;
+
+objectManager.start = function(){
+    console.log("object manager started");
+}
+ 
+objectManager.createObject = function(args){
+    switch (args.type) {
+        case background:
+            createBackgroundObject(args);
+            break;
+    
+        default:
+            break;
     }
 }
-},{"./loader/loader.js":5,"./slot/reel.js":7,"./slot/reelLines":8,"./slot/slot.js":9,"pixi.js":1}],3:[function(require,module,exports){
+
+function createBackgroundObject(args){
+    console.log("creating background object named: " + args.name);
+}
+
+function createButtonObject(args){
+    console.log("creating button object");
+}
+
+function createContainerObject(args){
+    console.log("creating container object");
+}
+
+},{}],4:[function(require,module,exports){
+/*
+This is a singleton instance which controls all of the game
+states and asset management. This is the parent node of all
+nodes which has to be pointed as the new objects are created
+in order to be able to handle all of the objects on the game
+scene.
+*/
+
+var objectManager = require('./engine/objectController.js');
+
+var gameManager = exports;
+
+gameManager.start = function(){
+    console.log("game manager started");
+    objectManager.start();
+}
+
+},{"./engine/objectController.js":3}],5:[function(require,module,exports){
 var assetManager = exports;
-
-
 
 assetManager.getSymbolTextures = function(gameData){
     var symTPath = gameData.settings.symbolTextureAssetPath;
@@ -130,7 +183,7 @@ assetManager.getSymbolTextures = function(gameData){
     }
     return symbolTextures;
 }
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var fileLoader = exports;
 
 fileLoader.loadJSON = function (path, callback) {
@@ -146,7 +199,7 @@ fileLoader.loadJSON = function (path, callback) {
     }
     xobj.send(null);
 }
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var app = require('./../app.js');
 var slot = require('./../slot/slot.js');
 var fileLoader = require('./fileLoader');
@@ -184,7 +237,7 @@ loader.loadComplete = function (){
 }
 
 
-},{"./../app.js":2,"./../slot/slot.js":9,"./assetManager":3,"./fileLoader":4}],6:[function(require,module,exports){
+},{"./../app.js":2,"./../slot/slot.js":11,"./assetManager":5,"./fileLoader":6}],8:[function(require,module,exports){
 var server = exports;
 
 server.name = "game server";
@@ -217,7 +270,7 @@ server.randomizeReels = function (rSize){
     }
     return server.reels;
 }
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var app = require('./../app.js');
 
 module.exports = function (data){
@@ -329,7 +382,7 @@ function normalizeIndexNumber(ind, arraySize){
         return ind;
     //return (arraySize - ind) < 0 ? Math.abs(arraySize-ind + 1) : ind;
 }
-},{"./../app.js":2}],8:[function(require,module,exports){
+},{"./../app.js":2}],10:[function(require,module,exports){
 var PIXI = require('pixi.js');
 var reelLines = exports;
 
@@ -388,7 +441,7 @@ function randomizeReelLines(){
     }
     console.log("winning line: " + p[0] + " " + p[1] + " " + p[2] + " " + p[3] + " " + p[4]);
 }
-},{"pixi.js":1}],9:[function(require,module,exports){
+},{"pixi.js":1}],11:[function(require,module,exports){
 var slot = exports;
 
 var server = require('./../serverSimulator/serverSim.js');
@@ -473,4 +526,4 @@ slot.startSpin = function(){
             slot.reelArr[i].stopReel(slot.spinData[i]);
     }
 }
-},{"./../serverSimulator/serverSim.js":6,"./reel.js":7}]},{},[2]);
+},{"./../serverSimulator/serverSim.js":8,"./reel.js":9}]},{},[2]);

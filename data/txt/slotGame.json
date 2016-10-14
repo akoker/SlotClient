@@ -1,7 +1,5 @@
 {
     "settings":{
-        "symbolTextureAssetPath": "/assets/symbols/",
-        "symbolAnimAssetPath": "assets/symbols/anim",
         "numberOfReels": 5,
         "totalLength": 20,
         "numberOfSymbolsOnReel": 3,
@@ -16,44 +14,6 @@
         "x": 0,
         "y": 0
     },
-    "symbolImages":[
-        {
-            "name": "symbol01",
-            "texture": "1.png"
-        },
-        {
-            "name": "symbol02",
-            "texture": "2.png"
-        },
-        {
-            "name": "symbol03",
-            "texture": "3.png"
-        },
-        {
-            "name": "symbol04",
-            "texture": "4.png"
-        },
-        {
-            "name": "symbol05",
-            "texture": "5.png"
-        },
-        {
-            "name": "symbol06",
-            "texture": "6.png"
-        },
-        {
-            "name": "symbol07",
-            "texture": "7.png"
-        },
-        {
-            "name": "symbol07",
-            "texture": "8.png"
-        },
-        {
-            "name": "bonus",
-            "texture": "bonus.png"
-        }
-    ],
     "scene":[
         {
             "type": "background",

@@ -1,13 +1,14 @@
 var app = require('./../app.js');
 
-module.exports = function (data){
+module.exports = function (reelData, gameData, assetData){
+    console.log("reel is initialized");
     //public variables
     this.numOfSymbols = 20;
     var symbolWidth = 144;
     var symbolHeight = 144;
     var iterations = 4;
     var symbolPath;
-    var gameData;
+    //var gameData;
     this.isSpinning = false;
     this.spinSpeed = 14;
     this.maxSpeed = 40;
@@ -15,12 +16,16 @@ module.exports = function (data){
     this.textureArr;
     this.textureChanged = false;
     this.index;
+    this.gameData = gameData;
+    this.assetData = assetData;
+    this.reelData = reelData;
+    console.log("datta gitti: " + assetData);
 
     //reelcontainer
     this.cont = new PIXI.Container();
 
     //symbol array for the reel
-    var reelData;
+    //var reelData;
 
     var brt = new PIXI.BaseRenderTexture(symbolWidth, this.numOfSymbols * symbolHeight, PIXI.SCALE_MODES.LINEAR, 1);
 
@@ -32,11 +37,13 @@ module.exports = function (data){
     this.tile = new PIXI.extras.TilingSprite(this.rendText, symbolWidth, symbolHeight*3);
 
     //init reel
-    this.createReel = function(target, textureArr, data){
+    this.createReel = function(target, textureArr){
+        //console.log(gameData);
         this.textureArr = textureArr;
-        reelData = data;   
+        console.log("textureArr: " + this.textureArr);
         for(var i = 0; i<this.numOfSymbols; i++){
-            var s = new PIXI.Sprite(this.textureArr[reelData[normalizeIndexNumber(target+i, reelData.length)]]);
+            //resources['symbol03'].texture);
+            var s = new PIXI.Sprite(textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);//reelData[normalizeIndexNumber(target+i, reelData.length)]
             s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }

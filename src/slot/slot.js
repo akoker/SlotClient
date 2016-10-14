@@ -17,6 +17,8 @@ slot.symbolTextures;
 slot.gameData;
 slot.reelData;
 slot.spinData;
+slot.gameManager;
+slot.assetData;
 
 
 function setVarValues(){
@@ -31,9 +33,10 @@ function setVarValues(){
 
 
 //init slot
-slot.initSlot = function(data){
+slot.initSlot = function(gData, aData){
     //set game data
-    slot.gameData = data;
+    slot.gameData = gData;
+    slot.assetData = aData;
     setVarValues();
 
     //get reelData from simulated server
@@ -47,8 +50,9 @@ slot.initSlot = function(data){
 
     //create reels
     for(var i = 0; i < numberOfReels; i++){
-        var r = new reel(slot.reelData[i]);
-        r.createReel(slot.spinData[i], slot.symbolTextures, slot.reelData[i]);
+
+        var r = new reel(slot.reelData[i], slot.gameData, slot.assetData);
+        r.createReel(slot.spinData[i], slot.gameManager.assetManager.symbolTextures, slot.reelData[i]);
         
         //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
         console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
@@ -69,7 +73,6 @@ slot.startSpin = function(){
     if(!slot.reelArr[slot.gameData.settings.numberOfReels-1].isSpinning)
         slot.spinData = server.randomizeSpin();
 
-        
     //you can trace it on the console if the spin stops on correct position or not. result of every spin will be show on the console.
     //you can check if visuals are correct by looking at the assets folder
     console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")

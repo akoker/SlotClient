@@ -18,7 +18,7 @@ var lineContainer;
 var gameData;
 
 //create renderer and the stage
-var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: true});
+var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: false});
 
 gameManager.start();
 
@@ -68,22 +68,26 @@ app.startGame = function(data){
         lineContainer.removeChildren();
         console.log("winLineButton is clicked");
         lineContainer.addChild(reelLine.drawWinningLine());
-    }
-
-    //initialize slot game
-    slot.initSlot(gameData);
+    }*/
 
     //add tiling sprites of the reels to the stage after initialization
-    for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        stage.addChild(slot.reelArr[i].tile);
-    }
 
-
+    /*
     //needs to be added to the stage after reels in order to be on the top layer
     stage.addChild(lineContainer);*/
 
     //start updating game
-    update();
+}
+
+update();
+
+app.addReelsToStage = function(data){
+    console.log("adding reels");
+    gameData = data;
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        stage.addChild(gameManager.slot.reelArr[i].tile);
+    }
+    console.log("textür: " + gameManager.assetManager.symbolTextures.resources['symbol03'].texture);
 }
 
 //updates frame
@@ -91,11 +95,15 @@ function update(){
     requestAnimationFrame(update);
     renderer.render(stage);
 
+    //console.log('reel: ' + gameManager.slot);
     //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
-    /*for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        renderer.render(slot.reelArr[i].cont, slot.reelArr[i].rendText);
-        if(slot.reelArr[i].isSpinning){
-            slot.reelArr[i].spinReel(gameData.settings.totalLength);
+    if(gameData!=null){
+        
+        for(var i = 0; i < gameData.settings.numberOfReels; i++){
+            renderer.render(gameManager.slot.reelArr[i].cont, gameManager.slot.reelArr[i].rendText);
+            /*if(gameManager.slot.reelArr[i].isSpinning){
+                gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
+            }*/
         }
-    }*/
+    }
 }

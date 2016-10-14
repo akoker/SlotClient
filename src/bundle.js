@@ -41,7 +41,7 @@ var lineContainer;
 var gameData;
 
 //create renderer and the stage
-var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: true});
+var renderer = PIXI.autoDetectRenderer(800, 600,{transparent: false});
 
 gameManager.start();
 
@@ -91,22 +91,26 @@ app.startGame = function(data){
         lineContainer.removeChildren();
         console.log("winLineButton is clicked");
         lineContainer.addChild(reelLine.drawWinningLine());
-    }
-
-    //initialize slot game
-    slot.initSlot(gameData);
+    }*/
 
     //add tiling sprites of the reels to the stage after initialization
-    for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        stage.addChild(slot.reelArr[i].tile);
-    }
 
-
+    /*
     //needs to be added to the stage after reels in order to be on the top layer
     stage.addChild(lineContainer);*/
 
     //start updating game
-    update();
+}
+
+update();
+
+app.addReelsToStage = function(data){
+    console.log("adding reels");
+    gameData = data;
+    for(var i = 0; i < gameData.settings.numberOfReels; i++){
+        stage.addChild(gameManager.slot.reelArr[i].tile);
+    }
+    console.log("textür: " + gameManager.assetManager.symbolTextures.resources['symbol03'].texture);
 }
 
 //updates frame
@@ -114,15 +118,19 @@ function update(){
     requestAnimationFrame(update);
     renderer.render(stage);
 
+    //console.log('reel: ' + gameManager.slot);
     //spins reel if triggerred. triggering is made by isSpinning flag of each reel, coming from reel.js
-    /*for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        renderer.render(slot.reelArr[i].cont, slot.reelArr[i].rendText);
-        if(slot.reelArr[i].isSpinning){
-            slot.reelArr[i].spinReel(gameData.settings.totalLength);
+    if(gameData!=null){
+        
+        for(var i = 0; i < gameData.settings.numberOfReels; i++){
+            renderer.render(gameManager.slot.reelArr[i].cont, gameManager.slot.reelArr[i].rendText);
+            /*if(gameManager.slot.reelArr[i].isSpinning){
+                gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
+            }*/
         }
-    }*/
+    }
 }
-},{"./gameManager.js":4,"./loader/loader.js":7,"./slot/reel.js":9,"./slot/reelLines":10,"./slot/slot.js":11,"pixi.js":1}],3:[function(require,module,exports){
+},{"./gameManager.js":4,"./loader/loader.js":8,"./slot/reel.js":10,"./slot/reelLines":11,"./slot/slot.js":12,"pixi.js":1}],3:[function(require,module,exports){
 var objectManager = exports;
 
 objectManager.start = function(){
@@ -161,19 +169,94 @@ in order to be able to handle all of the objects on the game
 scene.
 */
 
+var app = require('./app.js');
 var objectManager = require('./engine/objectController.js');
+var loader = require('./loader/loader.js');
+
+var gameJSON = '/../../data/txt/slotGame.json';
+var assetsJSON = '/../../data/txt/assets.json';
+
+var assetData;
+var gameData = new Object();
 
 var gameManager = exports;
 
+var counter = 0;
+var totalJSON = 2;
+
+
+gameManager.assetManager = require('./loader/assetManager.js');
+gameManager.slot = require('./slot/slot.js');
+
 gameManager.start = function(){
     console.log("game manager started");
-    objectManager.start();
+    loader.loadJSON(assetsJSON, createJSONData, "assetData");
+    loader.loadJSON(gameJSON, createJSONData, "gameData");
+    //objectManager.start();
 }
 
-},{"./engine/objectController.js":3}],5:[function(require,module,exports){
+gameManager.initGame = function(){
+    console.log("game is being initialized");7
+
+    //initialize slot game
+    gameManager.slot.gameManager = this;
+    gameManager.slot.initSlot(gameData, assetData);
+
+    app.addReelsToStage(gameData);
+}
+
+function createJSONData(data, varName){
+    console.log("assetData: " + data);
+
+    if(varName == "assetData")
+        assetData = data;
+    else if(varName == "gameData")
+        gameData = data;
+
+    checkJSONComplete();
+}
+
+function checkJSONComplete(){
+    counter++;
+    if(counter == totalJSON)
+        createAssets(assetData);
+}
+
+function createAssets(data){
+    gameManager.assetManager.loadAssets(data, gameManager.slot);
+}
+},{"./app.js":2,"./engine/objectController.js":3,"./loader/assetManager.js":6,"./loader/loader.js":8,"./slot/slot.js":12}],5:[function(require,module,exports){
+var PIXI = require('pixi.js');
+
+module.exports = function(args){
+    var callbackFunc;
+
+    var loader = PIXI.loader;
+    var counter = 0;
+
+    this.Load = function(prefix, callback){
+        callbackFunc = callback;
+        for(var i = 0; i < args.length; i++){
+            loader.add(args[i].name, prefix + args[i].texture);
+            loader.once('complete', onAssetsLoaded);
+            loader.load();
+        }
+    }
+
+    function onAssetsLoaded(){
+        counter++;
+        if(counter == args.length)
+            callbackFunc(loader);
+    }
+    return this;
+}
+},{"pixi.js":1}],6:[function(require,module,exports){
 var assetManager = exports;
 
-assetManager.getSymbolTextures = function(gameData){
+var assetLoader = require('./assetLoader.js');
+var gameManager = require('./../gameManager.js');
+
+/*assetManager.getSymbolTextures = function(gameData){
     var symTPath = gameData.settings.symbolTextureAssetPath;
     console.log("loading symbol textures");
     var symbolTextures = new Array();
@@ -182,8 +265,32 @@ assetManager.getSymbolTextures = function(gameData){
         symbolTextures.push(PIXI.Texture.fromImage(t));
     }
     return symbolTextures;
+}*/
+
+var totalAssetBatches = 1;
+var counter = 0;
+
+assetManager.symbolTextures;
+assetManager.symbolAnims;
+assetManager.uiAssets;
+
+assetManager.loadAssets = function(data){
+    var smbLoader = new assetLoader(data.symbolImages);
+    smbLoader.Load(data.settings.symbolTextureAssetPath, symbolsCallback)
 }
-},{}],6:[function(require,module,exports){
+
+function symbolsCallback(data){
+    assetManager.symbolTextures = data;
+    console.log("symbol textures: " + assetManager.symbolTextures);
+    checkComplete();
+}
+
+function checkComplete(){
+    counter++;
+    if(totalAssetBatches == counter)
+        gameManager.initGame();
+}
+},{"./../gameManager.js":4,"./assetLoader.js":5}],7:[function(require,module,exports){
 var fileLoader = exports;
 
 fileLoader.loadJSON = function (path, callback) {
@@ -199,7 +306,7 @@ fileLoader.loadJSON = function (path, callback) {
     }
     xobj.send(null);
 }
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var app = require('./../app.js');
 var slot = require('./../slot/slot.js');
 var fileLoader = require('./fileLoader');
@@ -209,35 +316,33 @@ var gameData;
 
 var loadedCounter = 0;
 var toLoad;
-var gameJSON = '/../../data/txt/slotGame.json';
 
 function jsonLoadResponse(dataVar){
     ("Game data is loading");
     return dataVar;
 }
 
+loader.start = function(counter){
+    loader.loadJSON(assetsJSON);
+}
+
 //loaderCtr keeps data of how many json files will be loaded
-loader.startLoader = function (loaderCtr){
-    console.log("Loader is initiated");
-    toLoad = loaderCtr;
+loader.loadJSON = function (path, callback, arg){
+    console.log("Loader is initiated, path: " + path);
     //Get game data from json
-    fileLoader.loadJSON(gameJSON, function f(response){
+    fileLoader.loadJSON(path, function f(response){
         gameData = JSON.parse(jsonLoadResponse(response));
-        loader.loadComplete();
+        loader.loadComplete(callback, arg);
     });
 }
 
-loader.loadComplete = function (){
-    slot.symbolTextures = assetManager.getSymbolTextures(gameData);
-    loadedCounter++;
-    if(loadedCounter == toLoad){
-        console.log("All assets are loaded, starting game...");
-    }
-    app.startGame(gameData);
+loader.loadComplete = function (callback, arg){
+    //slot.symbolTextures = assetManager.getSymbolTextures(gameData);
+    console.log("All assets are loaded, starting game...");
+    console.log("gamedata on loader: " + gameData);
+    callback(gameData, arg);
 }
-
-
-},{"./../app.js":2,"./../slot/slot.js":11,"./assetManager":5,"./fileLoader":6}],8:[function(require,module,exports){
+},{"./../app.js":2,"./../slot/slot.js":12,"./assetManager":6,"./fileLoader":7}],9:[function(require,module,exports){
 var server = exports;
 
 server.name = "game server";
@@ -270,17 +375,18 @@ server.randomizeReels = function (rSize){
     }
     return server.reels;
 }
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var app = require('./../app.js');
 
-module.exports = function (data){
+module.exports = function (reelData, gameData, assetData){
+    console.log("reel is initialized");
     //public variables
     this.numOfSymbols = 20;
     var symbolWidth = 144;
     var symbolHeight = 144;
     var iterations = 4;
     var symbolPath;
-    var gameData;
+    //var gameData;
     this.isSpinning = false;
     this.spinSpeed = 14;
     this.maxSpeed = 40;
@@ -288,12 +394,16 @@ module.exports = function (data){
     this.textureArr;
     this.textureChanged = false;
     this.index;
+    this.gameData = gameData;
+    this.assetData = assetData;
+    this.reelData = reelData;
+    console.log("datta gitti: " + assetData);
 
     //reelcontainer
     this.cont = new PIXI.Container();
 
     //symbol array for the reel
-    var reelData;
+    //var reelData;
 
     var brt = new PIXI.BaseRenderTexture(symbolWidth, this.numOfSymbols * symbolHeight, PIXI.SCALE_MODES.LINEAR, 1);
 
@@ -305,11 +415,13 @@ module.exports = function (data){
     this.tile = new PIXI.extras.TilingSprite(this.rendText, symbolWidth, symbolHeight*3);
 
     //init reel
-    this.createReel = function(target, textureArr, data){
+    this.createReel = function(target, textureArr){
+        //console.log(gameData);
         this.textureArr = textureArr;
-        reelData = data;   
+        console.log("textureArr: " + this.textureArr);
         for(var i = 0; i<this.numOfSymbols; i++){
-            var s = new PIXI.Sprite(this.textureArr[reelData[normalizeIndexNumber(target+i, reelData.length)]]);
+            //resources['symbol03'].texture);
+            var s = new PIXI.Sprite(textureArr.resources[this.assetData.symbolImages[reelData[normalizeIndexNumber(target+ i, this.reelData.length)]].name].texture);//reelData[normalizeIndexNumber(target+i, reelData.length)]
             s.position.y = (i)*symbolHeight;
             this.cont.addChild(s);
         }
@@ -382,7 +494,7 @@ function normalizeIndexNumber(ind, arraySize){
         return ind;
     //return (arraySize - ind) < 0 ? Math.abs(arraySize-ind + 1) : ind;
 }
-},{"./../app.js":2}],10:[function(require,module,exports){
+},{"./../app.js":2}],11:[function(require,module,exports){
 var PIXI = require('pixi.js');
 var reelLines = exports;
 
@@ -441,7 +553,7 @@ function randomizeReelLines(){
     }
     console.log("winning line: " + p[0] + " " + p[1] + " " + p[2] + " " + p[3] + " " + p[4]);
 }
-},{"pixi.js":1}],11:[function(require,module,exports){
+},{"pixi.js":1}],12:[function(require,module,exports){
 var slot = exports;
 
 var server = require('./../serverSimulator/serverSim.js');
@@ -461,6 +573,8 @@ slot.symbolTextures;
 slot.gameData;
 slot.reelData;
 slot.spinData;
+slot.gameManager;
+slot.assetData;
 
 
 function setVarValues(){
@@ -475,9 +589,10 @@ function setVarValues(){
 
 
 //init slot
-slot.initSlot = function(data){
+slot.initSlot = function(gData, aData){
     //set game data
-    slot.gameData = data;
+    slot.gameData = gData;
+    slot.assetData = aData;
     setVarValues();
 
     //get reelData from simulated server
@@ -491,8 +606,9 @@ slot.initSlot = function(data){
 
     //create reels
     for(var i = 0; i < numberOfReels; i++){
-        var r = new reel(slot.reelData[i]);
-        r.createReel(slot.spinData[i], slot.symbolTextures, slot.reelData[i]);
+
+        var r = new reel(slot.reelData[i], slot.gameData, slot.assetData);
+        r.createReel(slot.spinData[i], slot.gameManager.assetManager.symbolTextures, slot.reelData[i]);
         
         //you can trace it on the console if the spin stops on correct position or not. this is for initial reels.
         console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
@@ -513,7 +629,6 @@ slot.startSpin = function(){
     if(!slot.reelArr[slot.gameData.settings.numberOfReels-1].isSpinning)
         slot.spinData = server.randomizeSpin();
 
-        
     //you can trace it on the console if the spin stops on correct position or not. result of every spin will be show on the console.
     //you can check if visuals are correct by looking at the assets folder
     console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
@@ -526,4 +641,4 @@ slot.startSpin = function(){
             slot.reelArr[i].stopReel(slot.spinData[i]);
     }
 }
-},{"./../serverSimulator/serverSim.js":8,"./reel.js":9}]},{},[2]);
+},{"./../serverSimulator/serverSim.js":9,"./reel.js":10}]},{},[2]);

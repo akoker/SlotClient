@@ -50,6 +50,93 @@
         {
             "name" : "frame",
             "texture": "back.png"
+        },
+        {
+            "name" : "logo",
+            "texture": "logo.png"
+        },
+        {
+            "name" : "cliffhanger",
+            "texture": "cliffhanger.png"
+        },
+        {
+            "name" : "btnSpin",
+            "texture": "btnSpin.png"
+        },{
+            "name": "lineBtn1",
+            "texture": "line1.png"
+        },
+        {
+            "name": "lineBtn1Passive",
+            "texture": "line1Passive.png"
+        },
+        {
+            "name": "lineBtn2",
+            "texture": "line2.png"
+        },
+        {
+            "name": "lineBtn2Passive",
+            "texture": "line2Passive.png"
+        },
+        {
+            "name": "lineBtn3",
+            "texture": "line3.png"
+        },
+        {
+            "name": "lineBtn3Passive",
+            "texture": "line3Passive.png"
+        },
+        {
+            "name": "lineBtn4",
+            "texture": "line4.png"
+        },
+        {
+            "name": "lineBtn4Passive",
+            "texture": "line4Passive.png"
+        },
+        {
+            "name": "lineBtn5",
+            "texture": "line5.png"
+        },
+        {
+            "name": "lineBtn5Passive",
+            "texture": "line5Passive.png"
+        },
+        {
+            "name": "lineBtn6",
+            "texture": "line6.png"
+        },
+        {
+            "name": "lineBtn6Passive",
+            "texture": "line6Passive.png"
+        },
+        {
+            "name": "lineBtn7",
+            "texture": "line7.png"
+        },
+        {
+            "name": "lineBtn7Passive",
+            "texture": "line7Passive.png"
+        },
+        {
+            "name": "lineBtn8",
+            "texture": "line8.png"
+        },
+        {
+            "name": "lineBtn8Passive",
+            "texture": "line8Passive.png"
+        },
+        {
+            "name": "lineBtn9",
+            "texture": "line9.png"
+        },
+        {
+            "name": "lineBtn9Passive",
+            "texture": "line9Passive.png"
+        },
+        {
+            "name": "transparentBG",
+            "texture": "transparent.png"
         }
     ],
     "animations":[

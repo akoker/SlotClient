@@ -45,12 +45,11 @@ var lineContainer;
 var gameData;
 
 //create renderer and the app.stage
-var renderer = PIXI.autoDetectRenderer(1280, 800,{transparent: false});
-app.stage = new PIXI.Container();
+var interactive = true;
+var renderer = PIXI.autoDetectRenderer(1280, 800,{transparent: true});
+app.stage = new PIXI.Container(interactive);
 
 gameManager.start();
-
-
 
 //function initializes the game after load is completed. callback by loader.js
 app.startGame = function(){
@@ -68,11 +67,31 @@ app.addChildToStage = function(c){
 app.addReelsToStage = function(data){
     console.log("adding reels");
     gameData = data;
+    var c = new PIXI.Container();
     for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        app.stage.addChild(gameManager.slot.reelArr[i].tile);
+        c.addChild(gameManager.slot.reelArr[i].tile);
     }
     app.startGame();
+    return c;
 }
+
+/*var t = new PIXI.Sprite.fromImage('../assets/symbols/1.png');
+t.position.x = 100;
+
+var d = new PIXI.Sprite.fromImage('../assets/symbols/1.png');
+d.position.x = 50;
+
+t.interactive = true;
+
+t.mousedown = function(mouseData){
+    console.log("clicked");
+}
+
+//t.addChild(d);
+
+app.addChildToStage(t);*/
+
+app.startGame();
 
 //updates frame
 function update(){
@@ -93,30 +112,6 @@ function update(){
 
 function initUI(){
     lineContainer = new PIXI.Container;
-
-    //spin button and its handler are created
-    spinButton = document.getElementById('spinButton');
-    spinButton.onclick = function(){
-        lineContainer.removeChildren();
-        slot.startSpin();
-    } 
-
-    //drawLine button and its handler are created
-    lineButton = document.getElementById('lineButton');
-    lineButton.onclick = function(){
-        lineContainer.removeChildren();
-        console.log("lineButton is clicked");
-        lineContainer.addChild(reelLine.drawLine());
-    }   
-
-    //drawWinningLine button and its handler are created
-    winLineButton = document.getElementById('winLineButton');
-    winLineButton.onclick = function(){
-        lineContainer.removeChildren();
-        console.log("winLineButton is clicked");
-        lineContainer.addChild(reelLine.drawWinningLine());
-    }
-    
     //needs to be added to the app.stage after reels in order to be on the top layer
     app.stage.addChild(lineContainer);
 
@@ -136,6 +131,8 @@ function initUI(){
 var objectManager = exports;
 
 var gameManager = require('./../gameManager.js');
+var slot = require('./../slot/slot.js');
+var reelLines = require('./../slot/reelLines.js');
 var PIXI = require('pixi.js');
 
 objectManager.start = function(){
@@ -144,31 +141,114 @@ objectManager.start = function(){
  
 objectManager.createObject = function(args){
     switch (args.type) {
-        case background:
-            createBackgroundObject(args);
+        case "object":
+            return createGameObject(args);
+        case "container":
+            //createContainerObject(args);
             break;
-    
+        case "button":
+            createButtonObject(args);
+            break;
+        case "slotGame":
+            return createSlotGameObject(args);
         default:
             break;
     }
+    /*if(o!=null)
+    {
+        if(o.children!=undefined)
+        //gameManager.app.addChildToStage(o);
+    }*/
 }
 
-objectManager.createBackgroundObject = function(args){
-    console.log("creating background object named: " + args.name);
-    var t = new PIXI.Sprite(gameManager.assetManager.uiAssets.resources['frame'].texture);
-    console.log(t);
-    gameManager.app.addChildToStage(t);
+function createGameObject (args){
+    //console.log("creating: " + args.name + " " + args.type);
+    var s;
+    if(args.asset!=null){
+        var source = gameManager.assetManager.uiAssets.resources[args.asset];
+        if(source != undefined){
+            s = new PIXI.Sprite(source.texture);
+        }
+        else{
+            s = new PIXI.Graphics();
+            //args.bgColor = undefined ? s.beginFill() : s.beginFill(args.bgColor);
+            s.beginFill();
+            s.drawRect(0, 0, args.width = null ? 1 : args.width, args.height = null ? 1 : args.height);
+            s.endFill();
+        }
+        if(args.buttonMode){
+            s.buttonMode = true;
+            if(args.asset.active != null){
+                if(args.buttonState == "active")
+                    var tx = (gameManager.assetManager.uiAssets.resources[args.asset.active]);
+                else if(args.buttonState == "passive")
+                    var tx = (gameManager.assetManager.uiAssets.resources[args.asset.passive]);
+                s = new PIXI.Sprite(tx.texture);
+            }
+            if(args.actions!=undefined){
+            if(args.actions.mouseDown != undefined){
+                    s.interactive = true;
+                    s.mousedown = function(){
+                        console.log("clicked to: " + s.name);
+                        processProperty(args.actions.mouseDown);
+                    }
+                }
+            }
+        }
+        s.name = args.name;
+        args.x = null ? s.position.x = 0 : s.position.x = args.x;
+        args.y = null ? s.position.y = 0 : s.position.y = args.y;
+        //if(args.buttonMode == null)args.interactive = null ? s.interactive = false : s.interactive = args.interactive;
+        s.interactive = true;
+    }
+    return s;
 }
 
 function createButtonObject(args){
     console.log("creating button object");
 }
 
-function createContainerObject(args){
-    console.log("creating container object");
+function createSlotGameObject(args){
+    console.log("creating slot game object");
+    return gameManager.app.addReelsToStage(slot.gameData);
 }
 
-},{"./../gameManager.js":5,"pixi.js":2}],5:[function(require,module,exports){
+function processProperty(args){
+    if(args.length > 0){
+        for(var i = 0; i < args.length; i++)
+            processProperty(args[i])
+    }else{
+        if(args.execFunction != null){
+            var a = args.execFunction;
+            var b = args.execProps;
+            dynFuncs[a](b);
+            
+        }
+    }
+}
+
+var dynFuncs = [];
+
+dynFuncs.cons = function(){
+    console.log("cons is called");
+};
+
+dynFuncs.setLines = function(index){
+    var lnCont = gameManager.getObjectByName("lineContainer", gameManager.objects);
+    lnCont.removeChildren();
+    lnCont.addChild(reelLines.drawLine(index));
+};
+
+dynFuncs.toggleButtonState = function(args){
+    console.log("toggleButtonState is called");
+};
+
+dynFuncs.startSpin = function(){
+    var lnCont = gameManager.getObjectByName("lineContainer", gameManager.objects);
+    lnCont.removeChildren();
+    slot.startSpin();
+};
+},{"./../gameManager.js":5,"./../slot/reelLines.js":12,"./../slot/slot.js":13,"pixi.js":2}],5:[function(require,module,exports){
 /*
 This is a singleton instance which controls all of the game
 states and asset management. This is the parent node of all
@@ -179,6 +259,8 @@ scene.
 
 var objectManager = require('./engine/objectController.js');
 var loader = require('./loader/loader.js');
+
+var slot = require('./slot/slot.js');
 
 var gameJSON = '/../../data/txt/slotGame.json';
 var assetsJSON = '/../../data/txt/assets.json';
@@ -196,6 +278,7 @@ var totalJSON = 2;
 
 gameManager.assetManager = require('./loader/assetManager.js');
 gameManager.slot = require('./slot/slot.js');
+gameManager.objects = [];
 
 gameManager.start = function(){
     console.log("game manager started");
@@ -209,11 +292,9 @@ gameManager.initGame = function(){
     //initialize slot game
     gameManager.slot.gameManager = this;
     gameManager.slot.initSlot(gameData, assetData);
-
-    console.log("dataa: " + gameData);
-    objectManager.createBackgroundObject(gameData.scene[0]);
-
-    gameManager.app.addReelsToStage(gameData);
+    
+    createScene(gameData);
+    
 }
 
 gameManager.startSpinCycle = function(){
@@ -221,6 +302,31 @@ gameManager.startSpinCycle = function(){
         if(gameManager.slot.reelArr[i].isSpinning){
             gameManager.slot.reelArr[i].spinReel(gameData.settings.totalLength);
         }
+    }
+}
+
+gameManager.getObjectByName = function(name, array){
+    if(array.constructor !== Array){
+        if(array.name == name) return array;
+    }
+    else{
+        for(var i = 0; i < array.length; i++){
+            if(array[i].name == name) 
+                return array[i];
+            if(array[i].children.length > 0){
+                var a = searchChildrenByName(name, array[i].children);
+                if(a!=null) return a;
+            }
+        }
+    }
+    return null;
+}
+
+function searchChildrenByName(name ,children){
+    for(var i = 0; i < children.length; i++){
+        if(name == children[i].name) return children[i];
+        if(children[i].children != undefined)
+            searchChildrenByName(name, children[i].children)
     }
 }
 
@@ -241,6 +347,31 @@ function checkJSONComplete(){
 
 function createAssets(data){
     gameManager.assetManager.loadAssets(data, gameManager.slot);
+}
+
+function createScene(){
+    var n = slot.gameData.scene;
+    var ar = traverse(n);
+    gameManager.objects = ar;
+    for(var i = 0; i < ar.length; i++){
+        gameManager.app.addChildToStage(ar[i]);
+    }
+}
+
+function traverse(p){
+    var objArr = new Array();
+    for(var i = 0; i < p.length; i++){
+        var v = objectManager.createObject(p[i]);
+        if(v!=null){
+            objArr.push(v);
+            if(p[i].children!=undefined){
+                var ob = traverse(p[i].children);
+                for(var j = 0; j < ob.length;j++)
+                    v.addChild(ob[j]);
+            }
+        }
+    }
+    return objArr;
 }
 },{"./app.js":3,"./engine/objectController.js":4,"./loader/assetManager.js":7,"./loader/loader.js":9,"./slot/slot.js":13}],6:[function(require,module,exports){
 var PIXI = require('pixi.js');
@@ -498,8 +629,7 @@ module.exports = function (reelData, gameData, assetData){
 
     //stop reel
     this.stopReel = function(target){
-        if(!this.textureChanged)
-            this.cont = this.replaceTexture(target);
+        this.cont = this.replaceTexture(target);
         this.tile.tilePosition.y = 0;
         this.isSpinning = false;
     }
@@ -518,36 +648,64 @@ function normalizeIndexNumber(ind, arraySize){
 },{"./../app.js":3}],12:[function(require,module,exports){
 var PIXI = require('pixi.js');
 var reelLines = exports;
+var gameManager = require('./../gameManager.js');
 
 //data variables are hardcoded because this class is only for showcasing its functionality. it can easily be turned into completely dynamical.
 //drawing functions run dynamically
-var p = [2,1,1,2,0];
+var p = [
+    [2,2,1,2,2],
+    [0,0,1,0,0],
+    [1,2,2,2,1],
+    [2,1,1,1,2],
+    [0,0,0,0,0],
+    [1,1,1,1,1],
+    [2,2,2,2,2],
+    [2,1,0,1,2],
+    [0,1,2,1,0]
+]
+//var p = [2,1,1,2,0];
 var pArgs = new Object();
-pArgs.leftPos = 0;
+pArgs.leftPos = 260;
 pArgs.rightPos = 740;
-pArgs.topMargin = 100;
+pArgs.topMargin = 124;
 pArgs.symbolWidth = 144;
 pArgs.symbolHeight = 144;
 pArgs.reelMargin = 10;
 pArgs.numberOfReels = 5;
+pArgs.numberOfLines = 9;
 
 //draw only possible line
-reelLines.drawLine = function (){
-    randomizeReelLines();
+reelLines.drawLine = function (index){
     console.log("drawing line");
     var g = new PIXI.Graphics();
     g.lineStyle(4, 0xffd900, 1);
-    g.moveTo(pArgs.leftPos - 20, p[0]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
-    for(var i = 0; i < 5; i++){
-        g.lineTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[i] + pArgs.symbolHeight/2);
-        g.moveTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[i] + pArgs.symbolHeight/2);
+    var btnCont = gameManager.getObjectByName("lineButtonContainer", gameManager.objects);
+    var name = "lineButton" + (index + 1);
+    var sP = gameManager.getObjectByName(name, gameManager.objects);
+    g.moveTo(btnCont.x + sP.position.x + 50, btnCont.y + sP.position.y + 25);
+    for(var i = 0; i < pArgs.numberOfReels; i++){
+        g.lineTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
+        g.moveTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
+    }
+    //disabled other buttons
+    for(var j = 0; j < pArgs.numberOfLines; j++){
+        console.log("changing buttons");
+        var name = "lineButton" + (j + 1);
+        var s = gameManager.getObjectByName(name, gameManager.objects);
+        if(j!=(index)){
+            var tx = (gameManager.assetManager.uiAssets.resources["lineBtn" + (j + 1) + "Passive"]);
+            s.texture =tx.texture;
+        }else{
+            var tx = (gameManager.assetManager.uiAssets.resources["lineBtn" + (j + 1)]);
+            s.texture = tx.texture;
+        }
     }
     g.endFill();
     return g;
 }
 
 //draws winning line with squares
-reelLines.drawWinningLine = function (){
+reelLines.drawWinningLine = function (index){
     randomizeReelLines();
     console.log("drawing winning line");
     var g = new PIXI.Graphics();
@@ -556,12 +714,12 @@ reelLines.drawWinningLine = function (){
     g.moveTo(pArgs.leftPos -20, p[0]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
 
     for(var i = 0; i < 5; i++){
-        g.lineTo(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
-        g.moveTo(pArgs.leftPos + (i+1)*pArgs.symbolWidth + i*pArgs.reelMargin, p[i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
+        g.lineTo(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
+        g.moveTo(pArgs.leftPos + (i+1)*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
 
     }
     for(var i = 0; i < 5; i++){
-        g.drawRect(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[i]*pArgs.symbolHeight + pArgs.topMargin, pArgs.symbolWidth, pArgs.symbolHeight);
+        g.drawRect(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin, pArgs.symbolWidth, pArgs.symbolHeight);
     }
     g.endFill();
     return g;
@@ -574,7 +732,7 @@ function randomizeReelLines(){
     }
     console.log("winning line: " + p[0] + " " + p[1] + " " + p[2] + " " + p[3] + " " + p[4]);
 }
-},{"pixi.js":2}],13:[function(require,module,exports){
+},{"./../gameManager.js":5,"pixi.js":2}],13:[function(require,module,exports){
 var slot = exports;
 
 var PIXI = require('pixi.js');
@@ -595,7 +753,8 @@ slot.reelData;
 slot.spinData;
 slot.gameManager;
 slot.assetData;
-
+slot.spinStarted = false;
+slot.tArr = new Array();
 
 function setVarValues(){
     symbolWidth = slot.gameData.symbolProps.symbolWidth;
@@ -654,19 +813,32 @@ slot.startSpin = function(){
     //you can check if visuals are correct by looking at the assets folder
     console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
     
+    slot.tArr = new Array();
+    for(var i = 0; i < 5; i++){
+        var t = PIXI.timerManager.createTimer(400 * i + 0.1);
+        t.index = i;
+        slot.tArr.push(t);
+    }
     //if not spinning, start spinning each reel, if spinning, stop them and set the final position
     for(var i = 0; i < 5; i++){
         if(!slot.reelArr[i].isSpinning){
-
-            var t = PIXI.timerManager.createTimer(400 * i + 0.1);
-            t.start()
-            t.index = i;
-            t.on('end', function(){
-                slot.reelArr[this.index].startSpin(slot.spinData[this.index]);
+            slot.tArr[i].start()
+            slot.tArr[i].on('end', function(){
+                var flag = false;
+                for(var j = this.index; j >0; j--){
+                    if(!slot.reelArr[j-1].isSpinning && j > 0)flag = true;
+                }
+                if(!flag){
+                    slot.reelArr[this.index].startSpin(slot.spinData[this.index]);
+                }
             });
         }
-        else
+        else if(slot.reelArr[0].isSpinning){
+            for(var i = 0; i < 5; i++){
             slot.reelArr[i].stopReel(slot.spinData[i]);
+            console.log("to stop: " + slot.spinData[i]);
+            }
+        }
     }
 }
 },{"./../serverSimulator/serverSim.js":10,"./reel.js":11,"pixi.js":2}]},{},[3]);

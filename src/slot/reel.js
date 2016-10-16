@@ -92,8 +92,7 @@ module.exports = function (reelData, gameData, assetData){
 
     //stop reel
     this.stopReel = function(target){
-        if(!this.textureChanged)
-            this.cont = this.replaceTexture(target);
+        this.cont = this.replaceTexture(target);
         this.tile.tilePosition.y = 0;
         this.isSpinning = false;
     }

@@ -19,12 +19,11 @@ var lineContainer;
 var gameData;
 
 //create renderer and the app.stage
-var renderer = PIXI.autoDetectRenderer(1280, 800,{transparent: false});
-app.stage = new PIXI.Container();
+var interactive = true;
+var renderer = PIXI.autoDetectRenderer(1280, 800,{transparent: true});
+app.stage = new PIXI.Container(interactive);
 
 gameManager.start();
-
-
 
 //function initializes the game after load is completed. callback by loader.js
 app.startGame = function(){
@@ -42,11 +41,31 @@ app.addChildToStage = function(c){
 app.addReelsToStage = function(data){
     console.log("adding reels");
     gameData = data;
+    var c = new PIXI.Container();
     for(var i = 0; i < gameData.settings.numberOfReels; i++){
-        app.stage.addChild(gameManager.slot.reelArr[i].tile);
+        c.addChild(gameManager.slot.reelArr[i].tile);
     }
     app.startGame();
+    return c;
 }
+
+/*var t = new PIXI.Sprite.fromImage('../assets/symbols/1.png');
+t.position.x = 100;
+
+var d = new PIXI.Sprite.fromImage('../assets/symbols/1.png');
+d.position.x = 50;
+
+t.interactive = true;
+
+t.mousedown = function(mouseData){
+    console.log("clicked");
+}
+
+//t.addChild(d);
+
+app.addChildToStage(t);*/
+
+app.startGame();
 
 //updates frame
 function update(){
@@ -67,30 +86,6 @@ function update(){
 
 function initUI(){
     lineContainer = new PIXI.Container;
-
-    //spin button and its handler are created
-    spinButton = document.getElementById('spinButton');
-    spinButton.onclick = function(){
-        lineContainer.removeChildren();
-        slot.startSpin();
-    } 
-
-    //drawLine button and its handler are created
-    lineButton = document.getElementById('lineButton');
-    lineButton.onclick = function(){
-        lineContainer.removeChildren();
-        console.log("lineButton is clicked");
-        lineContainer.addChild(reelLine.drawLine());
-    }   
-
-    //drawWinningLine button and its handler are created
-    winLineButton = document.getElementById('winLineButton');
-    winLineButton.onclick = function(){
-        lineContainer.removeChildren();
-        console.log("winLineButton is clicked");
-        lineContainer.addChild(reelLine.drawWinningLine());
-    }
-    
     //needs to be added to the app.stage after reels in order to be on the top layer
     app.stage.addChild(lineContainer);
 

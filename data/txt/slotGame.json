@@ -16,7 +16,7 @@
     },
     "scene":[
         {
-            "type": "background",
+            "type": "object",
             "name": "mainBG",
             "asset": "mainBackground",
             "x": 0,
@@ -25,13 +25,7 @@
             "height": 800
         },
         {
-            "type": "slotGame",
-            "name": "game",
-            "x": 0,
-            "y": 0
-        },
-        {
-            "type": "background",
+            "type": "object",
             "name": "gameFrame",
             "asset": "frame",
             "x": 0,
@@ -40,154 +34,273 @@
             "height":800
         },
         {
-            "type": "container",
-            "name": "lineButtonContainer",
-            "asset": "",
+            "type": "slotGame",
+            "name": "game",
             "x": 0,
-            "y": 0,
+            "y": 0
+        },
+        {
+            "type": "object",
+            "name": "gameLogo",
+            "asset": "logo",
+            "x": 400,
+            "y": -20
+        },
+        {
+            "type": "object",
+            "name": "cliffhanger",
+            "asset": "cliffhanger",
+            "x": 1050,
+            "y": 200
+        },
+        {
+            "type": "object",
+            "name": "spinButon",
+            "asset": "btnSpin",
+            "x": 540,
+            "y": 580,
+            "buttonMode": true,
+            "actions":
+            {
+                "mouseDown":{
+                    "execFunction": "startSpin",
+                    "execProps": ""
+                }
+            }
+            
+        },
+        {
+            "type": "object",
+            "name": "lineContainer",
+            "asset": "transparentBG",
+            "x": 0,
+            "y": 0
+        },
+        {
+            "type": "object",
+            "name": "lineButtonContainer",
+            "interactive": true,
+            "buttonMode": true,
+            "asset": "transparentBG",
+            "x": 100,
+            "y": 100,
+            "width": 50,
+            "height": 500,
             "children":[
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton1",
-                    "assets":{
-                        "active":"lineButtons.1Active",
-                        "passive":"lineButtons.1Passive" 
+                    "asset":{
+                        "active":"lineBtn1",
+                        "passive":"lineBtn1Passive" 
                     },
+                    "buttonState": "active",
                     "x": 0,
                     "y": 0,
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 1
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 0
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton2",
-                    "assets":{
-                        "active":"lineButtons.2Active",
-                        "passive":"lineButtons.2Passive" 
+                    "asset":{
+                        "active":"lineBtn2",
+                        "passive":"lineBtn2Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 50,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 2
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 1
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton3",
-                    "assets":{
-                        "active":"lineButtons.3Active",
-                        "passive":"lineButtons.3Passive" 
+                    "asset":{
+                        "active":"lineBtn3",
+                        "passive":"lineBtn3Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 100,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 3
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 2
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton4",
-                    "assets":{
-                        "active":"lineButtons.4Active",
-                        "passive":"lineButtons.4Passive" 
+                    "asset":{
+                        "active":"lineBtn4",
+                        "passive":"lineBtn4Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 150,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 4
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 3
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton5",
-                    "assets":{
-                        "active":"lineButtons.4Active",
-                        "passive":"lineButtons.4Passive" 
+                    "asset":{
+                        "active":"lineBtn5",
+                        "passive":"lineBtn5Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 200,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 6
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 4
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton6",
-                    "assets":{
-                        "active":"lineButtons.5Active",
-                        "passive":"lineButtons.5Passive" 
+                    "asset":{
+                        "active":"lineBtn6",
+                        "passive":"lineBtn6Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 250,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 6
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 5
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton7",
-                    "assets":{
-                        "active":"lineButtons.7Active",
-                        "passive":"lineButtons.7Passive" 
+                    "asset":{
+                        "active":"lineBtn7",
+                        "passive":"lineBtn7Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 300,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 7
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 6
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton8",
-                    "assets":{
-                        "active":"lineButtons.8Active",
-                        "passive":"lineButtons.8Passive" 
+                    "asset":{
+                        "active":"lineBtn8",
+                        "passive":"lineBtn8Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 350,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 8
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 7
+                            }
+                        ]
                     }
                 },
                 {
-                    "type": "button",
+                    "type": "object",
+                    "buttonMode": true,
                     "name": "lineButton9",
-                    "assets":{
-                        "active":"lineButtons.9Active",
-                        "passive":"lineButtons.9Passive" 
+                    "asset":{
+                        "active":"lineBtn9",
+                        "passive":"lineBtn9Passive" 
                     },
                     "x": 0,
-                    "y": 0,
+                    "y": 400,
+                    "buttonState": "passive",
                     "actions":{
-                        "onClick":{
-                            "toggleButtonState":"",
-                            "setLines": 9
-                        }
+                        "mouseDown":[
+                            {
+                                "execFunction": "toggleButtonState",
+                                "execProps": ""
+                            },
+                            {
+                                "execFunction": "setLines",
+                                "execProps": 8
+                            }
+                        ]
                     }
                 }
             ]

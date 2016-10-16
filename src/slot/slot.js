@@ -18,7 +18,8 @@ slot.reelData;
 slot.spinData;
 slot.gameManager;
 slot.assetData;
-
+slot.spinStarted = false;
+slot.tArr = new Array();
 
 function setVarValues(){
     symbolWidth = slot.gameData.symbolProps.symbolWidth;
@@ -77,18 +78,31 @@ slot.startSpin = function(){
     //you can check if visuals are correct by looking at the assets folder
     console.log("spin is initiated, spin order: " + slot.reelData[0][slot.spinData[0]] + " " + slot.reelData[1][slot.spinData[1]] + " " + slot.reelData[2][slot.spinData[2]] + " " + slot.reelData[3][slot.spinData[3]] + " " + slot.reelData[4][slot.spinData[4]] + " ")
     
+    slot.tArr = new Array();
+    for(var i = 0; i < 5; i++){
+        var t = PIXI.timerManager.createTimer(400 * i + 0.1);
+        t.index = i;
+        slot.tArr.push(t);
+    }
     //if not spinning, start spinning each reel, if spinning, stop them and set the final position
     for(var i = 0; i < 5; i++){
         if(!slot.reelArr[i].isSpinning){
-
-            var t = PIXI.timerManager.createTimer(400 * i + 0.1);
-            t.start()
-            t.index = i;
-            t.on('end', function(){
-                slot.reelArr[this.index].startSpin(slot.spinData[this.index]);
+            slot.tArr[i].start()
+            slot.tArr[i].on('end', function(){
+                var flag = false;
+                for(var j = this.index; j >0; j--){
+                    if(!slot.reelArr[j-1].isSpinning && j > 0)flag = true;
+                }
+                if(!flag){
+                    slot.reelArr[this.index].startSpin(slot.spinData[this.index]);
+                }
             });
         }
-        else
+        else if(slot.reelArr[0].isSpinning){
+            for(var i = 0; i < 5; i++){
             slot.reelArr[i].stopReel(slot.spinData[i]);
+            console.log("to stop: " + slot.spinData[i]);
+            }
+        }
     }
 }

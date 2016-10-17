@@ -71,6 +71,7 @@ gameManager.getObjectByName = function(name, array){
     return null;
 }
 
+
 function searchChildrenByName(name ,children){
     for(var i = 0; i < children.length; i++){
         if(name == children[i].name) return children[i];

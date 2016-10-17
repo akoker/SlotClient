@@ -4,35 +4,27 @@ var gameManager = require('./../gameManager.js');
 var slot = require('./../slot/slot.js');
 var reelLines = require('./../slot/reelLines.js');
 var PIXI = require('pixi.js');
+var animController = require('./animationController.js');
 
 objectManager.start = function(){
     console.log("object manager started");
 }
+
  
 objectManager.createObject = function(args){
     switch (args.type) {
         case "object":
             return createGameObject(args);
-        case "container":
-            //createContainerObject(args);
-            break;
-        case "button":
-            createButtonObject(args);
-            break;
         case "slotGame":
             return createSlotGameObject(args);
+        case "text":
+            return createTextObject(args);
         default:
             break;
     }
-    /*if(o!=null)
-    {
-        if(o.children!=undefined)
-        //gameManager.app.addChildToStage(o);
-    }*/
 }
 
 function createGameObject (args){
-    //console.log("creating: " + args.name + " " + args.type);
     var s;
     if(args.asset!=null){
         var source = gameManager.assetManager.uiAssets.resources[args.asset];
@@ -41,7 +33,6 @@ function createGameObject (args){
         }
         else{
             s = new PIXI.Graphics();
-            //args.bgColor = undefined ? s.beginFill() : s.beginFill(args.bgColor);
             s.beginFill();
             s.drawRect(0, 0, args.width = null ? 1 : args.width, args.height = null ? 1 : args.height);
             s.endFill();
@@ -66,16 +57,29 @@ function createGameObject (args){
             }
         }
         s.name = args.name;
-        args.x = null ? s.position.x = 0 : s.position.x = args.x;
-        args.y = null ? s.position.y = 0 : s.position.y = args.y;
-        //if(args.buttonMode == null)args.interactive = null ? s.interactive = false : s.interactive = args.interactive;
+        args.x == null ? s.position.x = 0 : s.position.x = args.x;
+        args.y == null ? s.position.y = 0 : s.position.y = args.y;
+        args.visible == null ? s.visible = true : s.visible = args.visible;
         s.interactive = true;
     }
     return s;
 }
 
-function createButtonObject(args){
-    console.log("creating button object");
+function createTextObject(args){
+    var fFamily;
+    args.props.fontFamily == null ? fFamily = 'Arial' : fFamily = args.props.fontFamily;
+    var fSize;
+    args.props.fontSize == null ? fSize = 20 : fSize = args.props.fontSize;
+    var fFill;
+    args.props.fill == null ? fFill = 0xffffff : fFill = args.props.fill;
+    var fAlign;
+    args.props.align == null ? fAlign = 'left' : fAlign = args.props.align;
+    var text = new PIXI.Text(args.content,{fontFamily : fFamily, fontSize: fSize, fill : fFill, align : fAlign});
+    text.name = args.name;
+    args.x == null ? text.position.x = 0 : text.position.x = args.x;
+    args.y == null ? text.position.y = 0 : text.position.y = args.y;
+    args.visible == null ? text.visible = true : text.visible = args.visible;
+    return text;
 }
 
 function createSlotGameObject(args){
@@ -92,16 +96,11 @@ function processProperty(args){
             var a = args.execFunction;
             var b = args.execProps;
             dynFuncs[a](b);
-            
         }
     }
 }
 
 var dynFuncs = [];
-
-dynFuncs.cons = function(){
-    console.log("cons is called");
-};
 
 dynFuncs.setLines = function(index){
     var lnCont = gameManager.getObjectByName("lineContainer", gameManager.objects);
@@ -117,4 +116,11 @@ dynFuncs.startSpin = function(){
     var lnCont = gameManager.getObjectByName("lineContainer", gameManager.objects);
     lnCont.removeChildren();
     slot.startSpin();
+};
+
+dynFuncs.setObjectProperty = function(args){
+    var obj = gameManager.getObjectByName(args[0].target, gameManager.objects);
+    var prop = args[0].propName;
+    var val = args[0].propValue;
+    obj[prop] = val;
 };

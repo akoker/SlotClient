@@ -1,16 +1,18 @@
 var app = require('./../app.js');
+var slot = require('./slot.js');
 
 module.exports = function (reelData, gameData, assetData){
     console.log("reel is initialized");
     //public variables
-    this.numOfSymbols = 20;
-    var symbolWidth = 144;
-    var symbolHeight = 144;
-    var iterations = 4;
+    this.numOfSymbols = slot.gameData.settings.totalLength;
+    var noOfReels = slot.gameData.settings.numberOfReels;
+    var symbolWidth = slot.gameData.symbolProps.symbolWidth;
+    var symbolHeight = slot.gameData.symbolProps.symbolHeight;
+    var iterations = slot.gameData.settings.totalSpinIterations;
     var symbolPath;
     this.isSpinning = false;
-    this.spinSpeed = 12;
-    this.maxSpeed = 40;
+    this.spinSpeed = slot.gameData.settings.spinSpeed;
+    this.maxSpeed = slot.gameData.settings.spinMaxSpeed;
     var spinInc = this.spinSpeed;
     this.textureArr;
     this.textureChanged = false;
@@ -87,6 +89,9 @@ module.exports = function (reelData, gameData, assetData){
         else if(this.tile.tilePosition.y > iterations*symbolHeight*this.numOfSymbols){
             this.tile.tilePosition.y = iterations*symbolHeight*this.numOfSymbols;
             this.isSpinning = false;
+            slot.finishedReelCount++;
+            if(slot.finishedReelCount == noOfReels)
+                slot.finishSpinSequence();
         }
     }
 
@@ -95,6 +100,9 @@ module.exports = function (reelData, gameData, assetData){
         this.cont = this.replaceTexture(target);
         this.tile.tilePosition.y = 0;
         this.isSpinning = false;
+        slot.finishedReelCount++;
+        if(slot.finishedReelCount == noOfReels)
+            slot.finishSpinSequence();
     }
     return this;
 }

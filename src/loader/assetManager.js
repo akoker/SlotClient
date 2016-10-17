@@ -14,12 +14,13 @@ var gameManager = require('./../gameManager.js');
     return symbolTextures;
 }*/
 
-var totalAssetBatches = 2;
+var totalAssetBatches = 3;
 var counter = 0;
 
 assetManager.symbolTextures;
 assetManager.symbolAnims;
 assetManager.uiAssets;
+assetManager.animAssets;
 
 assetManager.loadAssets = function(data){
     var smbLoader = new assetLoader(data.symbolImages);
@@ -27,6 +28,10 @@ assetManager.loadAssets = function(data){
 
     var uiLoader = new assetLoader(data.uiImages);
     uiLoader.Load(data.settings.uiAssetsPath, uiCallBack);
+
+    var animLoader = new assetLoader(data.animations);
+    animLoader.Load(data.settings.animAssetPath, animCallback);
+    
 }
 
 function symbolsCallback(data){
@@ -43,7 +48,13 @@ function checkComplete(){
 
 function uiCallBack(data){
     assetManager.uiAssets = data;
-    console.log("assets are: " + assetManager.uiAssets.resources['frame'].texture);
     checkComplete();
 }
 
+function animCallback(data){
+    assetManager.animAssets = data;
+    console.log("anim data: " + data);
+    console.log("current anim data: " + data.resources['win07']);
+    console.log("assets are: " + assetManager.uiAssets.resources['frame'].texture);
+    checkComplete();
+}

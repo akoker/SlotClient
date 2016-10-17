@@ -1,12 +1,21 @@
 var server = exports;
-
+var slot = require('./../slot/slot.js');
 server.name = "game server";
 
-server.noOfReels = 5;
-server.reelSize = 100;
-server.reels = new Array();
-server.spinData = new Array();
-server.numberOfSymbolAssets = 9;
+
+
+//winning lines
+server.p = [
+    [2,2,1,2,2],
+    [0,0,1,0,0],
+    [1,2,2,2,1],
+    [2,1,1,1,2],
+    [0,0,0,0,0],
+    [1,1,1,1,1],
+    [2,2,2,2,2],
+    [2,1,0,1,2],
+    [0,1,2,1,0]
+]
 
 server.randomizeSpin = function (){
     server.spinData = new Array();
@@ -19,6 +28,11 @@ server.randomizeSpin = function (){
 }
 
 server.randomizeReels = function (rSize){
+    server.noOfReels = slot.gameData.settings.numberOfReels;
+    server.reelSize = slot.gameData.settings.reelItemSize;
+    server.reels = new Array();
+    server.spinData = new Array();
+    server.numberOfSymbolAssets = slot.gameData.settings.totalNumberOfSymbols;
     console.log('Generating reel data');
     reels = new Array();
     for(var i = 0; i < server.noOfReels; i++){
@@ -29,4 +43,22 @@ server.randomizeReels = function (rSize){
         server.reels.push(rl);
     }
     return server.reels;
+}
+
+server.checkWin = function(){
+    var winLines = [];
+    for(var i = 0; i < server.p.length; i++){
+        var ctr = 1;
+        var first = server.reels[0][(server.spinData[0] + server.p[i][0])];
+        for(var j = 1; j<server.noOfReels; j++){
+            if(first == server.reels[j][(server.spinData[j] + server.p[i][j])]){
+                ctr++;
+            }
+            else
+                break;
+        }
+        if(ctr > 2)
+            winLines.push([(i+1), ctr, first]);
+    }
+    return winLines;
 }

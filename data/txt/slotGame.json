@@ -6,7 +6,11 @@
         "reelGap": 10,
         "slotXPos": 260,
         "slotYPos": 124,
-        "reelItemSize": 100
+        "reelItemSize": 100,
+        "totalNumberOfSymbols": 9,
+        "totalSpinIterations": 4,
+        "spinSpeed": 12,
+        "spinMaxSpeed": 40
     },
     "symbolProps":{
         "symbolWidth": 144,
@@ -41,13 +45,6 @@
         },
         {
             "type": "object",
-            "name": "gameLogo",
-            "asset": "logo",
-            "x": 400,
-            "y": -20
-        },
-        {
-            "type": "object",
             "name": "cliffhanger",
             "asset": "cliffhanger",
             "x": 1050,
@@ -60,6 +57,19 @@
             "x": 540,
             "y": 580,
             "buttonMode": true,
+            "children":[
+                {
+                    "type": "text",
+                    "name": "spinText",
+                    "content": "SPIN/STOP",
+                    "x": 35,
+                    "y": 90,
+                    "props":{
+                        "fontSize": 25,
+                        "fill": "0x234567"
+                    }
+                }
+            ],
             "actions":
             {
                 "mouseDown":{
@@ -75,6 +85,83 @@
             "asset": "transparentBG",
             "x": 0,
             "y": 0
+        },
+        {
+            "type": "object",
+            "name": "gameLogo",
+            "asset": "logo",
+            "x": 400,
+            "y": -20
+        },
+        {
+            "type": "animation",
+            "name": "symbolAnim",
+            "x": 400,
+            "y": -20
+        },
+        {
+            "type": "object",
+            "name": "animationContainer",
+            "asset": "transparentBG",
+            "x": 0,
+            "y": 0
+        },
+        {
+            "type": "object",
+            "name": "paytable",
+            "asset": "window_2",
+            "x": 190,
+            "y": 150,
+            "visible": false,
+            "children":[
+                {
+                    "type": "object",
+                    "name": "symbolValues",
+                    "asset": "symbolValues",
+                    "x": 50,
+                    "y": 50
+                },
+                {
+                    "type": "object",
+                    "name": "btnPaytableClose",
+                    "asset": "btnClose",
+                    "x": 850,
+                    "y": -10,
+                    "buttonMode": true,
+                    "actions":{
+                        "mouseDown":{
+                            "execFunction": "setObjectProperty",
+                            "execProps":[
+                                {
+                                    "target": "paytable",
+                                    "propName": "visible",
+                                    "propValue": false
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "object",
+            "name": "btnPaytable",
+            "asset": "btnPaytable",
+            "x": 1100,
+            "y": 50,
+            "buttonMode": true,
+            "actions":{
+                "mouseDown":{
+                    "execFunction": "setObjectProperty",
+                    "execProps":[
+                        {
+                            "target": "paytable",
+                            "propName": "visible",
+                            "propValue": true
+                        }
+                    ]
+                }
+            }
         },
         {
             "type": "object",
@@ -95,7 +182,7 @@
                         "active":"lineBtn1",
                         "passive":"lineBtn1Passive" 
                     },
-                    "buttonState": "active",
+                    "buttonState": "passive",
                     "x": 0,
                     "y": 0,
                     "actions":{

@@ -2,8 +2,7 @@ var PIXI = require('pixi.js');
 var reelLines = exports;
 var gameManager = require('./../gameManager.js');
 
-//data variables are hardcoded because this class is only for showcasing its functionality. it can easily be turned into completely dynamical.
-//drawing functions run dynamically
+//list of winning lines
 var p = [
     [2,2,1,2,2],
     [0,0,1,0,0],
@@ -39,9 +38,55 @@ reelLines.drawLine = function (index){
         g.lineTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
         g.moveTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
     }
-    //disabled other buttons
+
+    reelLines.activateLineButton(index);
+
+    g.endFill();
+    return g;
+}
+
+//draws winning line with squares
+reelLines.drawWinningLine = function (index, count){
+    console.log("drawing winning line: " + index);
+    var g = new PIXI.Graphics();
+    g.lineStyle(4, 0xaad900, 1);
+    
+    var btnCont = gameManager.getObjectByName("lineButtonContainer", gameManager.objects);
+    var name = "lineButton" + (index + 1);
+    var sP = gameManager.getObjectByName(name, gameManager.objects);
+    console.log("sp.y = " + sP.y);
+    g.moveTo(btnCont.position.x + sP.position.x + 50, btnCont.position.y + sP.position.y + 25);
+    g.lineTo(pArgs.leftPos, pArgs.topMargin + pArgs.symbolHeight*p[index][0] + pArgs.symbolHeight/2);
+    for(var i = 0; i < count-1; i++){
+        g.moveTo(pArgs.leftPos + pArgs.reelMargin*i + (i+1)*pArgs.symbolWidth, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
+        g.lineTo(pArgs.leftPos + pArgs.reelMargin*i + (i+1)*pArgs.symbolWidth + pArgs.reelMargin, pArgs.topMargin + pArgs.symbolHeight*p[index][i+1] + pArgs.symbolHeight/2);
+    }
+    g.moveTo(pArgs.leftPos + pArgs.reelMargin*(count-1) + (count)*pArgs.symbolWidth, pArgs.topMargin + pArgs.symbolHeight*p[index][count-1] + pArgs.symbolHeight/2);
+    for(i = count; i < 5; i++){
+        g.lineTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
+        g.moveTo(pArgs.leftPos + pArgs.reelMargin*i + i*pArgs.symbolWidth + pArgs.symbolWidth/2, pArgs.topMargin + pArgs.symbolHeight*p[index][i] + pArgs.symbolHeight/2);
+    }
+    for(var i = 0; i < count; i++){
+        g.drawRect(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin, pArgs.symbolWidth, pArgs.symbolHeight);
+    }
+
+    reelLines.activateLineButton(index);
+
+    g.endFill();
+    return g;
+}
+
+reelLines.animateWinningLines = function(winArr){
+    console.log("winning lines are being animated " + winArr);
+    var f = winArr[0][0]-1;
+    var g = winArr[0][1];
+    console.log("f: " + f + " g: " + g); 
+    return reelLines.drawWinningLine(f,g);
+}
+
+reelLines.activateLineButton = function(index){
+    //disabled all buttons but selected one
     for(var j = 0; j < pArgs.numberOfLines; j++){
-        console.log("changing buttons");
         var name = "lineButton" + (j + 1);
         var s = gameManager.getObjectByName(name, gameManager.objects);
         if(j!=(index)){
@@ -52,29 +97,16 @@ reelLines.drawLine = function (index){
             s.texture = tx.texture;
         }
     }
-    g.endFill();
-    return g;
 }
 
-//draws winning line with squares
-reelLines.drawWinningLine = function (index){
-    randomizeReelLines();
-    console.log("drawing winning line");
-    var g = new PIXI.Graphics();
-    g.lineStyle(4, 0xaad900, 1);
-    
-    g.moveTo(pArgs.leftPos -20, p[0]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
-
-    for(var i = 0; i < 5; i++){
-        g.lineTo(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
-        g.moveTo(pArgs.leftPos + (i+1)*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin + pArgs.symbolHeight/2);
-
+reelLines.deactivateLineButtons = function(){
+     //disabled all buttons
+    for(var j = 0; j < pArgs.numberOfLines; j++){
+        var name = "lineButton" + (j + 1);
+        var s = gameManager.getObjectByName(name, gameManager.objects);
+        var tx = (gameManager.assetManager.uiAssets.resources["lineBtn" + (j + 1) + "Passive"]);
+        s.texture =tx.texture;
     }
-    for(var i = 0; i < 5; i++){
-        g.drawRect(pArgs.leftPos + i*pArgs.symbolWidth + i*pArgs.reelMargin, p[index][i]*pArgs.symbolHeight + pArgs.topMargin, pArgs.symbolWidth, pArgs.symbolHeight);
-    }
-    g.endFill();
-    return g;
 }
 
 //randomizes reel line data so that you can see it works on all conditions
@@ -84,3 +116,14 @@ function randomizeReelLines(){
     }
     console.log("winning line: " + p[0] + " " + p[1] + " " + p[2] + " " + p[3] + " " + p[4]);
 }
+
+function normalizeIndexNumber(ind, arraySize){
+    if(ind < 0){
+        return Math.abs(arraySize + ind);
+    }
+    if(ind >= arraySize){
+        return Math.abs(arraySize - ind);
+    }else
+        return ind;
+}
+

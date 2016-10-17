@@ -5,6 +5,7 @@ var reel = require('./slot/reel.js');
 var loader = require('./loader/loader.js');
 var reelLine = require('./slot/reelLines');
 var gameManager = require('./gameManager.js');
+var animController = require('./engine/animationController.js');
 
 var app = exports;
 
@@ -46,6 +47,7 @@ app.addReelsToStage = function(data){
         c.addChild(gameManager.slot.reelArr[i].tile);
     }
     app.startGame();
+
     return c;
 }
 
@@ -99,5 +101,4 @@ function initUI(){
     //append renderer viewport to gamediv on html file
     var gameDiv = document.getElementById('gameDiv');
     gameDiv.appendChild(renderer.view);
-
 }

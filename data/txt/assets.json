@@ -2,7 +2,8 @@
     "settings":{
         "symbolTextureAssetPath": "/assets/symbols/",
         "symbolAnimAssetPath": "assets/symbols/anim/",
-        "uiAssetsPath": "assets/ui/"
+        "uiAssetsPath": "assets/ui/",
+        "animAssetPath": "assets/animations/"
     },
     "symbolImages":[
         {
@@ -62,7 +63,24 @@
         {
             "name" : "btnSpin",
             "texture": "btnSpin.png"
-        },{
+        },
+        {
+            "name": "btnPaytable",
+            "texture": "paytable.png"
+        },
+        {
+            "name": "window_2",
+            "texture": "window_2.png"
+        },
+        {
+            "name": "btnClose",
+            "texture": "close.png"
+        },
+        {
+            "name": "symbolValues",
+            "texture": "symbolValues.png"
+        },
+        {
             "name": "lineBtn1",
             "texture": "line1.png"
         },
@@ -140,6 +158,205 @@
         }
     ],
     "animations":[
-
+        {
+            "name": "win01",
+            "texture": "win_effect/win_effect_87.png"
+        },
+        {
+            "name": "win02",
+            "texture": "win_effect/win_effect_88.png"
+        },
+        {
+            "name": "win03",
+            "texture": "win_effect/win_effect_89.png"
+        },
+        {
+            "name": "win04",
+            "texture": "win_effect/win_effect_90.png"
+        },
+        {
+            "name": "win05",
+            "texture": "win_effect/win_effect_91.png"
+        },
+        {
+            "name": "win06",
+            "texture": "win_effect/win_effect_92.png"
+        },
+        {
+            "name": "win07",
+            "texture": "win_effect/win_effect_93.png"
+        },
+        {
+            "name": "win08",
+            "texture": "win_effect/win_effect_94.png"
+        },
+        {
+            "name": "win09",
+            "texture": "win_effect/win_effect_95.png"
+        },
+        {
+            "name": "win10",
+            "texture": "win_effect/win_effect_96.png"
+        },
+        {
+            "name": "win11",
+            "texture": "win_effect/win_effect_97.png"
+        },
+        {
+            "name": "win12",
+            "texture": "win_effect/win_effect_98.png"
+        },
+        {
+            "name": "win13",
+            "texture": "win_effect/win_effect_99.png"
+        },
+        {
+            "name": "win14",
+            "texture": "win_effect/win_effect_100.png"
+        },
+        {
+            "name": "win15",
+            "texture": "win_effect/win_effect_101.png"
+        },
+        {
+            "name": "win16",
+            "texture": "win_effect/win_effect_102.png"
+        },
+        {
+            "name": "win17",
+            "texture": "win_effect/win_effect_103.png"
+        },
+        {
+            "name": "win18",
+            "texture": "win_effect/win_effect_104.png"
+        },
+        {
+            "name": "win19",
+            "texture": "win_effect/win_effect_105.png"
+        },
+        {
+            "name": "win20",
+            "texture": "win_effect/win_effect_106.png"
+        },
+        {
+            "name": "win21",
+            "texture": "win_effect/win_effect_107.png"
+        },
+        {
+            "name": "win22",
+            "texture": "win_effect/win_effect_108.png"
+        },
+        {
+            "name": "win23",
+            "texture": "win_effect/win_effect_109.png"
+        },
+        {
+            "name": "win24",
+            "texture": "win_effect/win_effect_110.png"
+        },
+        {
+            "name": "win25",
+            "texture": "win_effect/win_effect_111.png"
+        },
+        {
+            "name": "win26",
+            "texture": "win_effect/win_effect_112.png"
+        },
+        {
+            "name": "win27",
+            "texture": "win_effect/win_effect_113.png"
+        },
+        {
+            "name": "win28",
+            "texture": "win_effect/win_effect_114.png"
+        },
+        {
+            "name": "win29",
+            "texture": "win_effect/win_effect_115.png"
+        },
+        {
+            "name": "win30",
+            "texture": "win_effect/win_effect_116.png"
+        },
+        {
+            "name": "win31",
+            "texture": "win_effect/win_effect_117.png"
+        },
+        {
+            "name": "win32",
+            "texture": "win_effect/win_effect_118.png"
+        },
+        {
+            "name": "win33",
+            "texture": "win_effect/win_effect_119.png"
+        },
+        {
+            "name": "win34",
+            "texture": "win_effect/win_effect_120.png"
+        },
+        {
+            "name": "win35",
+            "texture": "win_effect/win_effect_121.png"
+        },
+        {
+            "name": "win36",
+            "texture": "win_effect/win_effect_122.png"
+        },
+        {
+            "name": "win37",
+            "texture": "win_effect/win_effect_123.png"
+        },
+        {
+            "name": "win38",
+            "texture": "win_effect/win_effect_124.png"
+        },
+        {
+            "name": "win39",
+            "texture": "win_effect/win_effect_125.png"
+        },
+        {
+            "name": "win40",
+            "texture": "win_effect/win_effect_126.png"
+        },
+        {
+            "name": "win41",
+            "texture": "win_effect/win_effect_127.png"
+        },
+        {
+            "name": "win42",
+            "texture": "win_effect/win_effect_128.png"
+        },
+        {
+            "name": "win43",
+            "texture": "win_effect/win_effect_129.png"
+        },
+        {
+            "name": "win44",
+            "texture": "win_effect/win_effect_130.png"
+        },
+        {
+            "name": "win45",
+            "texture": "win_effect/win_effect_131.png"
+        },
+        {
+            "name": "win46",
+            "texture": "win_effect/win_effect_132.png"
+        },
+        {
+            "name": "win47",
+            "texture": "win_effect/win_effect_133.png"
+        },
+        {
+            "name": "win48",
+            "texture": "win_effect/win_effect_134.png"
+        },
+        {
+            "name": "win49",
+            "texture": "win_effect/win_effect_135.png"
+        },
+        {
+            "name": "win50",
+            "texture": "win_effect/win_effect_136.png"
+        }
     ]
 }
